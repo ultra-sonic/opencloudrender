@@ -279,7 +279,7 @@ def exportVrscene():
     #oldschool
     #cameraName  = getAttr('vraySettings.batchCamera')
     
-    renderLayer = rendering.editRenderLayerGlobals(q=1,crl=1)
+    renderLayer = rendering.editRenderLayerGlobals(q=1,crl=1).replace(':','_')
     
     vrsceneNameList = []
     
@@ -320,17 +320,19 @@ def exportVrscene():
         if os.path.exists(projectPath + '/renderScenes') == 0:
             os.makedirs(projectPath + '/renderScenes')
         #vrsceneName = projectPath + '/renderScenes/' + sceneName + '_' + cameraName + '.vrscene'
-        vrsceneName = projectPath + '/renderScenes/' + sceneName + '_' + cameraName.replace( ':' , '_' ) + '.vrscene'
-
-        setAttr ("vraySettings.vrscene_filename", vrsceneName)
+        vrsceneName = projectPath + '/renderScenes/' + sceneName + '_' + cameraName + '_' + renderLayer +'.vrscene'
+        vrsceneName = vrsceneName.replace(':','_')
+        setAttr ("vraySettings.vrscene_filename", vrsceneName )
 
         #export vrscene
         #language.Mel.eval('vrend')
         language.Mel.eval('renderWindowRenderCamera render "" ' + cameraName);
 
         #append renderlayername when returning da real name
-        vrsceneNameList.append( vrsceneName.replace('.vrscene'  ,   '_' + renderLayer + '.vrscene') )
+        #vrsceneNameList.append( vrsceneName.replace('.vrscene'  ,   '_' + renderLayer + '.vrscene') )
+        vrsceneNameList.append( vrsceneName )
         
+    print vrsceneNameList
     return vrsceneNameList
 
 
