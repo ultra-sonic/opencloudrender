@@ -1,0 +1,8 @@
+log in to aws
+click "username" -> security credentials
+then click -> Access Keys
+
+create file ~/.boto with this contents:
+[Credentials]
+aws_access_key_id = YOURACCESSKEY
+aws_secret_access_key = YOURSECRETKEY
