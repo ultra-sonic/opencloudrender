@@ -4,7 +4,7 @@ bucket_name = 'vray_repo'
 
 def push( releaseType="*" , build="*" , host_app="*" ):
     allFiles = get_files_in_directory( "/opt/vray" )
-    upload_files( allFiles )
+    upload_files( bucket_name ,  allFiles )
 
 def pull():
     pass

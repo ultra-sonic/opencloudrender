@@ -39,7 +39,7 @@ def percent_cb(complete, total):
     sys.stdout.flush()
 
 
-def upload_files( bucketname , root_folder , uploadFileNames ):
+def upload_files( bucketname , uploadFileNames , root_folder="" ):
     for filename in uploadFileNames:
         sourcepath = os.path.join(sourceDir + filename)
         destpath = os.path.join(destDir, filename)
