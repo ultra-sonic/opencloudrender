@@ -1,6 +1,6 @@
 from fb_s3IO import upload_files,get_files_in_directory
 
-bucket_name = 'vray_repo'
+bucket_name = 'vray-repo'
 
 def push( releaseType="*" , build="*" , host_app="*" ):
     sourceDir = "/opt/vray"

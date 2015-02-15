@@ -11,11 +11,10 @@ PART_SIZE = 6 * 1000 * 1000
 
 conn = boto.connect_s3()
 
-def get_files_in_directory(sourceDir):
+def get_files_in_directory(sourceDir , recursive=False ):
     uploadFileNames = []
-    for (sourceDir, dirname, filename) in os.walk(sourceDir):
+    for (sourceDir, dirname, filename) in os.walk( sourceDir ):
         uploadFileNames.extend(filename)
-        break
     return uploadFileNames
 
 
