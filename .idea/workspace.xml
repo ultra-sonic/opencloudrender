@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c89aeea8-b3a5-42f9-af0e-258465d25915" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fb_s3IO.py" afterPath="$PROJECT_DIR$/fb_s3IO.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fb_vrayRepoSync.py" afterPath="$PROJECT_DIR$/fb_vrayRepoSync.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -55,8 +54,8 @@
       <file leaf-file-name="fb_vrayRepoSync.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/fb_vrayRepoSync.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.15463917" vertical-offset="0" max-vertical-offset="873">
-              <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.085910656" vertical-offset="0" max-vertical-offset="873">
+              <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -339,7 +338,13 @@
       <option name="project" value="LOCAL" />
       <updated>1424034683044</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="vray repo push and pull">
+      <created>1424035174105</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1424035174105</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -514,8 +519,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fb_vrayRepoSync.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.15463917" vertical-offset="0" max-vertical-offset="873">
-          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.085910656" vertical-offset="0" max-vertical-offset="873">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
           <folding />
         </state>
       </provider>
