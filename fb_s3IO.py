@@ -4,14 +4,6 @@ import boto.s3
 import os.path
 import sys
 
-# Fill in info on data to upload
-# destination bucket name
-bucket_name = 'fbcloudrender-testdata'
-# source directory
-sourceDir = 'testData/'
-# destination directory name (on s3)
-destDir = ''
-
 # max size in bytes before uploading in parts. between 1 and 5 GB recommended
 MAX_SIZE = 20 * 1000 * 1000
 #size of parts when uploading in parts
@@ -39,10 +31,10 @@ def percent_cb(complete, total):
     sys.stdout.flush()
 
 
-def upload_files( bucketname , sourceDir , uploadFileNames , root_folder="" ):
+def upload_files( bucketname , sourceDir , uploadFileNames , destDir='' ):
     for filename in uploadFileNames:
-        sourcepath = os.path.join(sourceDir + filename)
-        destpath = os.path.join(destDir, filename)
+        sourcepath = os.path.join( sourceDir , filename)
+        destpath   = os.path.join( destDir , filename)
         print 'Uploading %s to Amazon S3 bucket %s' % \
               (sourcepath, bucket_name)
 
