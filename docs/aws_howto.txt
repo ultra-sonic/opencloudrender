@@ -6,3 +6,14 @@ create file ~/.boto with this contents:
 [Credentials]
 aws_access_key_id = YOURACCESSKEY
 aws_secret_access_key = YOURSECRETKEY
+
+
+s3fs:
+
+#PUT CACHE ON EPHEMERAL LATER!
+s3fs vray-repo aws-buckets/vray-repo -oro,use_cache=/tmp,retries=2,nomultipart
+#when you see 000 permissions it is most likely that you created those files/folders using boto an dyou did not set s3fs metadata:
+		x-amz-meta-gid		1000
+		x-amz-meta-mtime	1424158705
+		x-amz-meta-uid		1088
+		x-amz-meta-mode 	33204
