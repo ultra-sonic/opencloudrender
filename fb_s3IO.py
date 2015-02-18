@@ -56,8 +56,8 @@ def upload_files( bucket_name , sourceDir , uploadFileNames , sourcePrefix ):
             key.key = destpath
 
         print "Uploading: {0}".format( filename )
-        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=10)
         #metadata test
-        key.set_metadata('shizzle', 'my nizzle')
-        key.set_metadata('x-amz-meta-gid', '1000')
-        key.set_metadata('x-amz-meta-mode', '33204')
+        key.set_metadata('uid', '1088')
+        key.set_metadata('gid', '1000')
+        key.set_metadata('mode', '33204') #33204=rw-rw-r--   33277=rwxrwxr-x
+        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=10)
