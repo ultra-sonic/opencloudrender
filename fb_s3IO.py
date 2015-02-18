@@ -54,5 +54,10 @@ def upload_files( bucket_name , sourceDir , uploadFileNames , sourcePrefix ):
         else:
             key = boto.s3.key.Key( bucket )
             key.key = destpath
+
         print "Uploading: {0}".format( filename )
         key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=10)
+        #metadata test
+        key.set_metadata('shizzle', 'my nizzle')
+        key.set_metadata('x-amz-meta-gid', '1000')
+        key.set_metadata('x-amz-meta-mode', '33204')
