@@ -59,5 +59,5 @@ def upload_files( bucket_name , sourceDir , uploadFileNames , sourcePrefix ):
         #metadata test
         key.set_metadata('uid', '1088')
         key.set_metadata('gid', '1000')
-        key.set_metadata('mode', '33204') #33204=rw-rw-r--   33277=rwxrwxr-x
+        key.set_metadata('mode', '33277') #33204=rw-rw-r--   33277=rwxrwxr-x
         key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=10)
