@@ -2,10 +2,8 @@ import os
 import sys
 from fb_s3IO import upload_files,get_files_in_directory
 
-bucket_name = 'vray-repo'
-
 # build="31003" or build="24002"
-def push( releaseType="official" , build="" , operating_system="Linux" , host_app="" ):
+def push( bucket_name , releaseType="official" , build="" , operating_system="Linux" , host_app="" ):
     """
 
     :rtype : int
@@ -22,5 +20,3 @@ def push( releaseType="official" , build="" , operating_system="Linux" , host_ap
 
 def pull():
     pass
-
-push()

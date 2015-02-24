@@ -12,9 +12,9 @@ PART_SIZE = 6 * 1000 * 1000
 
 conn = boto.connect_s3()
 
-def get_files_in_directory(sourceDir , recursive=False ):
+def get_files_in_directory(source_dir , recursive=False ):
     uploadFileNames = []
-    for (sourceDir, dirname, filename) in os.walk( sourceDir ):
+    for (source_dir, dirname, filename) in os.walk( source_dir ):
         uploadFileNames.extend(filename)
     return uploadFileNames
 
@@ -23,17 +23,19 @@ def percent_cb(complete, total):
     sys.stdout.write( "sent {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
+def upload_file( bucket_name , file_name ):
+    upload_files( bucket_name , os.path.dirname( file_name ) , [ os.path.basename( file_name ) ] )
 
-def upload_files( bucket_name , sourceDir , uploadFileNames , sourcePrefix ):
+def upload_files( bucket_name , source_dir , upload_file_names_list , strip_source_prefix='' ):
     try:
         bucket = conn.get_bucket(bucket_name)
     except boto.exception.S3ResponseError:
         bucket = conn.create_bucket(bucket_name,
                                     location=boto.s3.connection.Location.EU)
 
-    destDir = sourceDir[ len( sourcePrefix ): ]
-    for filename in uploadFileNames:
-        sourcepath = os.path.join( sourceDir , filename)
+    destDir = source_dir[ len( strip_source_prefix ): ]
+    for filename in upload_file_names_list:
+        sourcepath = os.path.join( source_dir , filename)
         destpath   = os.path.join( destDir , filename)
 
         #check md5 of source
