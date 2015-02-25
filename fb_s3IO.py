@@ -18,12 +18,17 @@ existing_buckets=dict()
 # todo - implement proper exclude list a la rsync
 
 def create_bucket( bucket_name ):
-    try:
-        bucket = conn.get_bucket(bucket_name)
-    except boto.exception.S3ResponseError:
-        bucket = conn.create_bucket(bucket_name,
-                                    location=boto.s3.connection.Location.EU)
-    existing_buckets[ bucket_name ] = bucket
+    # todo - debug if this is really working as expected
+    if bucket_name not in existing_buckets.keys():
+        try:
+            bucket = conn.get_bucket(bucket_name)
+        except boto.exception.S3ResponseError:
+            bucket = conn.create_bucket(bucket_name,
+                                        location=boto.s3.connection.Location.EU)
+        existing_buckets[ bucket_name ] = bucket
+        return bucket
+    else:
+        return existing_buckets[ bucket_name ]
 
 
 def get_files_in_directory(source_dir , recursive=False ):
@@ -38,13 +43,13 @@ def percent_cb(complete, total):
     sys.stdout.flush()
 
 def upload_file( bucket_name , file_name ):
+    create_folder( bucket_name , os.path.dirname( file_name ) , recursive=True )
     upload_files( bucket_name , os.path.dirname( file_name ) , [ os.path.basename( file_name ) ] )
 
 def upload_files( bucket_name , source_dir , upload_file_names_list , strip_source_prefix='' ):
 
-    if bucket_name not in existing_buckets.keys():
-        create_bucket( bucket_name )
-    bucket = existing_buckets[ bucket_name ]
+
+    bucket = create_bucket( bucket_name )
 
     for exclude in exclude_list:
         if exclude in source_dir:
@@ -52,18 +57,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
             return
 
     dest_dir = source_dir[ len( strip_source_prefix ): ]
-    # todo set folder metadata
-    """try:
-        folder = 'testfolder/'
-        key = bucket.get_key( folder )
-        key.set_contents_from_string( '' )
-        #key.set_metadata('uid', '1001')
-        #key.set_metadata('gid', '1001')
-        #key.set_metadata('mode', '33204') #33204=rw-rw-r--   33277=rwxrwxr-x
-        # todo - implement proper duplication of mode!
-    except:
-        print "Setting metadata failed on directory: {0}".format( folder )
-    """
+
     # init progress output
     counter = 0
     file_count = len( upload_file_names_list )
@@ -75,7 +69,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
                 return
 
         sourcepath = os.path.join( source_dir , filename)
-        destpath   = os.path.join( dest_dir , filename)
+        dest_path   = os.path.join( dest_dir , filename)
 
         #check md5 of source
         try:
@@ -86,7 +80,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
             continue
         #get MD5 if file already in bucket
         #print destpath
-        key = bucket.get_key( destpath )
+        key = bucket.get_key( dest_path )
         if key != None:
             destpath_md5 =  key.etag[1:-1]
             if destpath_md5 == sourcepath_md5:
@@ -94,7 +88,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
                 continue
         else:
             key = boto.s3.key.Key( bucket )
-            key.key = destpath
+            key.key = dest_path
 
         print "Uploading: {0} {1} / {2}".format( filename , counter , file_count)
         #set files metadata
@@ -106,9 +100,47 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
 
 
 
+def test_permissions( bucket_name , dest_path ):
+    bucket = create_bucket( bucket_name )
+    key = bucket.get_key( dest_path )
+    #acl = key.get_acl()
+    #print acl
+    mode = key.get_metadata( 'mode' )
+    print mode
+    uid = key.get_metadata( 'uid' )
+    print uid
+    gid = key.get_metadata( 'gid' )
+    print gid
 
+def create_folders( bucket_name , source_dir , dir_names  , strip_source_prefix ):
+    for dir_name in dir_names:
+        # todo make this striping thing a function and DRY! make sure it strips only when source_dir.startswith
+        dir_name_full = os.path.join( source_dir[ len( strip_source_prefix ): ] , dir_name )
+        create_folder( bucket_name , dir_name_full )
 
+def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid = 1001 , gid = 1001 ):
 
+    bucket = create_bucket( bucket_name )
+
+    #safety first - make sure we have slash at the end of our foldername
+    folder_name = folder_name.rstrip('/') + '/'
+
+    key = bucket.get_key( folder_name )
+    if key==None:
+        if recursive:
+            parent_dir = os.path.dirname( folder_name.rstrip('/') )
+            if parent_dir != '/':
+                # print "recursing into: {0}".format(parent_dir)
+                create_folder( bucket_name , parent_dir , recursive , mode , uid , gid )
+        key = bucket.new_key( folder_name )
+        key.set_metadata( 'mode' , mode )
+        key.set_metadata( 'uid' , uid )
+        key.set_metadata( 'gid' , gid )
+        key.set_contents_from_string('')
+        print 'Successfully created: ' + folder_name
+    else:
+        print 'Folder already exists: ' + folder_name
+    return folder_name
 
 
 
