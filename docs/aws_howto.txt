@@ -39,3 +39,9 @@ BEFORE GIVING INSTANCES TO SOMEONE ELSE:
 delete .boto
 delete /etc/passwd-s3fs
 delete keys in fstab!!!
+
+-----------------------------------------
+afanasy port forwarding!!!
+port 51000-51002 an den rechner durchreichen, der die farm überwachen soll! es könnte auch 51002 alleine reichen für afwatch!!!
+todo: keepalive afrender!!!
+todo: imagemagick doPost() in der cloud!

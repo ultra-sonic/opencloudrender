@@ -1,4 +1,5 @@
 # Import afanasy python module ( must be in PYTHONPATH).
+import os
 import af
 
 def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
@@ -40,7 +41,8 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
     #job.setUserName( user_name )
 
     for vrscene_file in vrscene_list:
-        AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_file , step_size )
+        output_image_path = getOutputImagePath( vrscene_file )
+        AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_file , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
 
         print AFcmd
 
@@ -62,3 +64,17 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
     # Send job to Afanasy server.
     result=job.send()
     return result
+
+def getOutputImagePath( vrscene_path ):
+    img_file = None
+    img_dir  = None
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
+            if line.find('img_dir') > -1:
+                img_dir = line.split('"')[1]
+            if line.find('img_file') > -1:
+                img_file = line.split('"')[1]
+            if img_file!=None and img_dir!=None:
+                return ( img_dir , img_file )
+    return None
+    #raise OSError("No image output path found!")
