@@ -2,46 +2,27 @@
 import os , af
 from utils import validate_file_path
 
-def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
+def sendJob( vrscene_list , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
     # UI Options -- TODO implement!!
-    # renderPreviewFirst=1
-    # stepSize = 1
-    # priority=50
-    # GIonly=0
-    # tmpPacketSize=1
-    # seqDivMin=1
-    # clientGroup='ALL'
-
-    # DONE multi vray versions
-
-    """
-    if localFarm==0:
-        # get image output directory
-        for imagePath in getOutputImageNameList():
-            vrayImageDir = os.path.dirname(imagePath)
-            # check if the filename matches our convention
-            checkPath( vrayImageDir )
-
-            # DRY!!!!! DONT REPEAT YOURSELF!!!
-            # create image dir on FTP
-            # ####vrayImageDir = vrayImageDir.replace(':','_COLON_') #need to replace : (colon) with the word "_colon_"
-            # TODO - den forward-slash hack fixen
-            createDirectoryOnFTP( translatePathToFTP( vrayImageDir ) , 'rw')
-
-            # prefix directory with farm paths
-            # vrayImageDir = translatePathToFarm( vrayImageDir )
-    """
 
     # Create a job.
     job = af.Job( vrscene_list[0].split( '/' )[-1].rstrip( '.vrscene' ) )
 
     job.setNeedOS('linux')
-    job.setPriority(99)
+    job.setPriority( priority )
     #user_name = 'render'
     #job.setUserName( user_name )
 
     for vrscene_file in vrscene_list:
-        output_image_path = get_output_image_path( validate_file_path( vrscene_file ) )
+        # todo implement full parsing of all vraySettingsOutput parameters into a dict!
+        output_image_path  = get_output_image_path( validate_file_path( vrscene_file ) )
+        anim_start_end = get_anim_start_end   (                     vrscene_file   ) # no validation needed anymore
+        start_frame = anim_start_end[0]
+        end_frame   = anim_start_end[1]
+        if start_frame_override > -1:
+            start_frame = start_frame_override
+        if end_frame_override > -1:
+            end_frame = end_frame_override
 
         AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_file , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
 
@@ -58,9 +39,7 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
 
         # Set block to numeric type, providing first, last frame and frames per host
         block.setNumeric( int(  start_frame ) , int(  end_frame ), 1 , int( step_size ) )
-        block.setNonSequential( True )
-        # block.tasks = range(13,17)
-        #TODO ein block vorher mit den previewframes
+        block.setSequential( 10 )
 
     # Send job to Afanasy server.
     result=job.send()
@@ -68,16 +47,33 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
 
 
 
-def get_output_image_path( vrscene_path ):
+def get_output_image_path( vrscene_path , frame_num_prefix='.' ):
     img_file = None
     img_dir  = None
+    anim_frame_padding = None
     with open( vrscene_path , 'r' ) as vrscene:
         for line in vrscene:
-            if line.find('img_dir') > -1:
+            if line.find('img_dir=') > -1:
                 img_dir = line.split('"')[1]
-            if line.find('img_file') > -1:
+            if line.find('img_file=') > -1:
                 img_file = line.split('"')[1]
-            if img_file!=None and img_dir!=None:
-                return ( validate_file_path( img_dir ) , img_file )
-    return None
-    #raise OSError("No image output path found!")
+            if line.find('anim_frame_padding=') > -1:
+                anim_frame_padding = line.rstrip(';\n').split('=')[-1]
+            if img_file!=None and img_dir!=None and anim_frame_padding!=None:
+                last_dot = img_file.rfind('.')
+                img_file_with_padding = img_file[ : last_dot ] + frame_num_prefix + "%0{0}d".format( anim_frame_padding ) + img_file[ last_dot : ]
+                return ( validate_file_path( img_dir ) , img_file_with_padding )
+    raise Exception("No image_output_path or anim_frame_padding found in vrscene" + vrscene_path )
+
+def get_anim_start_end( vrscene_path ):
+    anim_start = None
+    anim_end   = None
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
+            if line.find('anim_start=') > -1:
+                anim_start = line.rstrip(';\n').split('=')[-1]
+            if line.find('anim_end=') > -1:
+                anim_end  = line.rstrip(';\n').split('=')[-1]
+            if anim_start!=None and anim_end!=None:
+                return( anim_start , anim_end )
+    raise Exception("No anim_start or anim_end found in vrscene" + vrscene_path )
