@@ -42,11 +42,11 @@ def percent_cb(complete, total):
     sys.stdout.write( "sent {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
-def upload_file( bucket_name , file_name ):
-    create_folder( bucket_name , os.path.dirname( file_name ) , recursive=True )
-    upload_files( bucket_name , os.path.dirname( file_name ) , [ os.path.basename( file_name ) ] )
+def upload_file( bucket_name , file_path , strip_path_prefix='' ):
+    create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True )
+    upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
 
-def upload_files( bucket_name , source_dir , upload_file_names_list , strip_source_prefix='' ):
+def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' ):
 
 
     bucket = create_bucket( bucket_name )
@@ -56,7 +56,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_sour
             print "Directory excluded!"
             return
 
-    dest_dir = source_dir[ len( strip_source_prefix ): ]
+    dest_dir = source_dir[ len( strip_path_prefix ): ]
 
     # init progress output
     counter = 0
@@ -114,8 +114,7 @@ def test_permissions( bucket_name , dest_path ):
 
 def create_folders( bucket_name , source_dir , dir_names  , strip_source_prefix ):
     for dir_name in dir_names:
-        # todo make this striping thing a function and DRY! make sure it strips only when source_dir.startswith
-        dir_name_full = os.path.join( source_dir[ len( strip_source_prefix ): ] , dir_name )
+        dir_name_full = os.path.join( strip_file_path( source_dir , strip_source_prefix ) , dir_name )
         create_folder( bucket_name , dir_name_full )
 
 def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid = 1001 , gid = 1001 ):
@@ -142,10 +141,11 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
         print 'Folder already exists: ' + folder_name
     return folder_name
 
-
-
-
-
+def strip_file_path( file_path , strip_path_prefix  ):
+    if file_path.startswith( strip_path_prefix ):
+        return file_path[ len( strip_path_prefix ): ]
+    else:
+        return file_path
 
 
 

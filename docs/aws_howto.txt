@@ -36,9 +36,8 @@ s3fs vray-repo aws-buckets/vray-repo -oro,use_cache=/tmp,retries=2,nomultipart
 
 
 BEFORE GIVING INSTANCES TO SOMEONE ELSE:
-delete .boto
-delete /etc/passwd-s3fs
-delete keys in fstab!!!
+rm -f ~/.boto /etc/boto.cfg /etc/passwd-s3fs 
+delete keys in fstab - if present,but should be done through /etc/passwd-s3fs 
 
 -----------------------------------------
 afanasy port forwarding!!!

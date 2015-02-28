@@ -1,6 +1,6 @@
 import os
 import sys
-from fb_s3IO import upload_files,create_folders
+from s3IO import upload_files,create_folders
 
 # build="31003" or build="24002"
 def push( bucket_name , releaseType="official" , build="" , operating_system="Linux" , host_app="" ):

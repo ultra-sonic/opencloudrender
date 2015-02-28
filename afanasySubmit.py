@@ -41,7 +41,8 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
     #job.setUserName( user_name )
 
     for vrscene_file in vrscene_list:
-        output_image_path = getOutputImagePath( vrscene_file )
+        output_image_path = get_output_image_path( validate_file_path( vrscene_file ) )
+
         AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_file , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
 
         print AFcmd
@@ -65,7 +66,9 @@ def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_
     result=job.send()
     return result
 
-def getOutputImagePath( vrscene_path ):
+
+
+def get_output_image_path( vrscene_path ):
     img_file = None
     img_dir  = None
     with open( vrscene_path , 'r' ) as vrscene:
@@ -75,6 +78,6 @@ def getOutputImagePath( vrscene_path ):
             if line.find('img_file') > -1:
                 img_file = line.split('"')[1]
             if img_file!=None and img_dir!=None:
-                return ( img_dir , img_file )
+                return ( validate_file_path( img_dir ) , img_file )
     return None
     #raise OSError("No image output path found!")
