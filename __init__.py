@@ -1,5 +1,6 @@
 import os
 import vrayRepoSync , vraySceneSync , afanasySubmit , s3IO , utils
+from utils import validate_file_path
 
 vray_repo_bucket_name   = 'vray-repo'               # TODO goes into UI
 vrscene_bucket_name     = 'fbcloudrender-testdata'  # TODO goes into UI
@@ -29,7 +30,7 @@ def test_getOutputImagePath():
     return 0
 
 def upload_image_s3( file_path , strip_path_prefix ):
-    s3IO.upload_file( vrscene_bucket_name , file_path , strip_path_prefix )
+    s3IO.upload_file( vrscene_bucket_name , validate_file_path( file_path ) , strip_path_prefix=strip_path_prefix )
 
 def upload_image_ftp( file_path , strip_path_prefix ):
     pass

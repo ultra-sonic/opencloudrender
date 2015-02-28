@@ -1,6 +1,6 @@
 # Import afanasy python module ( must be in PYTHONPATH).
-import os
-import af
+import os , af
+from utils import validate_file_path
 
 def sendJob( vrscene_list, start_frame, end_frame, step_size, priority, preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
     # UI Options -- TODO implement!!

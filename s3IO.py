@@ -43,7 +43,7 @@ def percent_cb(complete, total):
     sys.stdout.flush()
 
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
-    create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True )
+    create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
     upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
 
 def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' ):
@@ -56,7 +56,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
             print "Directory excluded!"
             return
 
-    dest_dir = source_dir[ len( strip_path_prefix ): ]
+    dest_dir = strip_file_path (source_dir , strip_path_prefix )
 
     # init progress output
     counter = 0
@@ -117,12 +117,12 @@ def create_folders( bucket_name , source_dir , dir_names  , strip_source_prefix 
         dir_name_full = os.path.join( strip_file_path( source_dir , strip_source_prefix ) , dir_name )
         create_folder( bucket_name , dir_name_full )
 
-def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid = 1001 , gid = 1001 ):
+def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid = 1001 , gid = 1001 , strip_path_prefix='' ):
 
     bucket = create_bucket( bucket_name )
 
     #safety first - make sure we have slash at the end of our foldername
-    folder_name = folder_name.rstrip('/') + '/'
+    folder_name = strip_file_path( folder_name , strip_path_prefix ).rstrip('/') + '/'
 
     key = bucket.get_key( folder_name )
     if key==None:
@@ -142,8 +142,11 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
     return folder_name
 
 def strip_file_path( file_path , strip_path_prefix  ):
+    print "In: " + file_path
     if file_path.startswith( strip_path_prefix ):
-        return file_path[ len( strip_path_prefix ): ]
+        stripped_path = file_path[ len( strip_path_prefix ): ]
+        print "Out: " + stripped_path
+        return stripped_path
     else:
         return file_path
 
