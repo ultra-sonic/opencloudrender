@@ -10,7 +10,7 @@ def showUI():
     pass
 
 def test_s3_fileio():
-    vrayRepoSync.push( vray_repo_bucket_name )
+    #vrayRepoSync.push( vray_repo_bucket_name )
     vraySceneSync.uploadWithDependencies( vrscene_bucket_name , vrscene_list )
 
 def test_afanasySubmit():
@@ -34,9 +34,12 @@ def test_getAnimStartEnd():
     print start_end_tuple
 
 def upload_image_s3( file_path , strip_path_prefix , start_frame , end_frame , step_size ):
-    for frame_number in range( start_frame , end_frame , step_size ):
-        file_path_frame = file_path % frame_number
-        s3IO.upload_file( vrscene_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
+    if os.path.isfile( file_path ):
+        for frame_number in range( start_frame , end_frame , step_size ):
+            file_path_frame = file_path % frame_number
+            s3IO.upload_file( vrscene_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
+    else:
+        raise Exception( "File not found: " + file_path )
 
 def upload_image_ftp( file_path , strip_path_prefix ):
     pass
@@ -45,6 +48,6 @@ def upload_image_ftp( file_path , strip_path_prefix ):
 #upload_image_s3( '/data_local//blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA//images/_tmpcloudtest_v001.0001.png' , '/data_local' )
 #test_s3_fileio()
 #test_s3_folderIO()
-test_afanasySubmit()
+#test_afanasySubmit()
 #test_getOutputImagePath()
 #test_getAnimStartEnd()
