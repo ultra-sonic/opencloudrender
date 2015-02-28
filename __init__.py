@@ -36,9 +36,8 @@ def upload_image_ftp( file_path , strip_path_prefix ):
     pass
 
 
-upload_image_s3( '/data_local//blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA//images/_tmpcloudtest_v001.0001.png' , '/data_local' )
-
+#upload_image_s3( '/data_local//blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA//images/_tmpcloudtest_v001.0001.png' , '/data_local' )
 #test_s3_fileio()
 #test_s3_folderIO()
-test_afanasySubmit()
+#test_afanasySubmit()
 #test_getOutputImagePath()

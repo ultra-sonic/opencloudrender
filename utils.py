@@ -7,10 +7,10 @@ def validate_file_path( file_path ):
     return valid_path
 
 def strip_file_path( file_path , strip_path_prefix  ):
-    print "In: " + file_path
+    #print "In: " + file_path
     if file_path.startswith( strip_path_prefix ):
         stripped_path = file_path[ len( strip_path_prefix ): ]
-        print "Out: " + stripped_path
+        #print "Out: " + stripped_path
         return stripped_path
     else:
         return file_path
