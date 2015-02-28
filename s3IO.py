@@ -4,6 +4,7 @@ import hashlib
 
 import os.path
 import sys
+from utils import strip_file_path
 
 # max size in bytes before uploading in parts. between 1 and 5 GB recommended
 MAX_SIZE = 20 * 1000 * 1000
@@ -141,14 +142,7 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
         print 'Folder already exists: ' + folder_name
     return folder_name
 
-def strip_file_path( file_path , strip_path_prefix  ):
-    print "In: " + file_path
-    if file_path.startswith( strip_path_prefix ):
-        stripped_path = file_path[ len( strip_path_prefix ): ]
-        print "Out: " + stripped_path
-        return stripped_path
-    else:
-        return file_path
+
 
 
 
