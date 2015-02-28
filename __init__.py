@@ -33,19 +33,17 @@ def test_getAnimStartEnd():
     start_end_tuple = afanasySubmit.get_anim_start_end( vrscene_list[0] )
     print start_end_tuple
 
-def upload_image_s3( file_path , strip_path_prefix , start_frame , end_frame , step_size ):
-    if os.path.isfile( file_path ):
-        for frame_number in range( start_frame , end_frame , step_size ):
-            file_path_frame = file_path % frame_number
-            s3IO.upload_file( vrscene_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
-    else:
-        raise Exception( "File not found: " + file_path )
+def upload_image_s3( vrscene , file_path , strip_path_prefix , start_frame , end_frame , step_size ):
+    padding = afanasySubmit.get_anim_frame_padding( vrscene )
+    for frame_number in range( start_frame , end_frame+1 , step_size ):
+        file_path_frame = afanasySubmit.add_padding_to_image_path( file_path , padding ) % frame_number
+        s3IO.upload_file( vrscene_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
 
 def upload_image_ftp( file_path , strip_path_prefix ):
     pass
 
 
-#upload_image_s3( '/data_local//blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA//images/_tmpcloudtest_v001.0001.png' , '/data_local' )
+#upload_image_s3( '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v002.vrscene' , '/data_local/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/images/masterLayer/cloudtest_v002/persp1/cloudtest_v002_masterLayer.exr' , '/data_local' , 3 , 3 , 1 )
 #test_s3_fileio()
 #test_s3_folderIO()
 #test_afanasySubmit()

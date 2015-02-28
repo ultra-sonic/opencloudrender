@@ -47,23 +47,33 @@ def sendJob( vrscene_list , step_size=1 , start_frame_override = -1 , end_frame_
 
 
 
-def get_output_image_path( vrscene_path , frame_num_prefix='.' ):
+def get_output_image_path( vrscene_path ):
     img_file = None
     img_dir  = None
-    anim_frame_padding = None
     with open( vrscene_path , 'r' ) as vrscene:
         for line in vrscene:
             if line.find('img_dir=') > -1:
                 img_dir = line.split('"')[1]
             if line.find('img_file=') > -1:
                 img_file = line.split('"')[1]
+            if img_file!=None and img_dir!=None:
+                return ( validate_file_path( img_dir ) , img_file )
+
+    raise Exception("No image_output_path found in vrscene" + vrscene_path )
+
+def add_padding_to_image_path( img_file_path , anim_frame_padding , frame_num_prefix='' ):
+    last_dot = img_file_path.rfind('.')
+    img_file_with_padding = img_file_path[ : last_dot ] + frame_num_prefix + "%0{0}d".format( anim_frame_padding ) + img_file_path[ last_dot : ]
+    return img_file_with_padding
+
+def get_anim_frame_padding( vrscene_path ):
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
             if line.find('anim_frame_padding=') > -1:
                 anim_frame_padding = line.rstrip(';\n').split('=')[-1]
-            if img_file!=None and img_dir!=None and anim_frame_padding!=None:
-                last_dot = img_file.rfind('.')
-                img_file_with_padding = img_file[ : last_dot ] + frame_num_prefix + "%0{0}d".format( anim_frame_padding ) + img_file[ last_dot : ]
-                return ( validate_file_path( img_dir ) , img_file_with_padding )
-    raise Exception("No image_output_path or anim_frame_padding found in vrscene" + vrscene_path )
+                return anim_frame_padding
+    raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
+
 
 def get_anim_start_end( vrscene_path ):
     anim_start = None
