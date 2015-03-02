@@ -1,11 +1,6 @@
 import os , afanasySubmit , s3IO
 from utils import validate_file_path
 
-
-#vray_repo_bucket_name   = 'vray-repo'               # TODO goes into UI
-#vrscene_bucket_name     = 'fbcloudrender-testdata'  # TODO goes into UI
-#vrscene_list = [ '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v002.vrscene' ]
-
 def showUI():
     pass
 
