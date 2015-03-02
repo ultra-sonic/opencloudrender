@@ -1,10 +1,10 @@
 import os , vrayRepoSync , vraySceneSync , afanasySubmit , s3IO , utils
 from fbcloudrender import upload_image_s3
 
-vray_repo_bucket_name   = os.environ['VRAY_REPO']
+vray_repo_bucket_name   = os.environ['VRAY_REPO_BUCKET']
 data_bucket_name        = os.environ['DATA_BUCKET']
 data_local              = os.environ['DATA_LOCAL']
-vrscene_list = [ '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v002.vrscene' ]
+vrscene_list = [ '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v004.vrscene' ]
 
 
 def test_s3_fileio():
@@ -12,10 +12,7 @@ def test_s3_fileio():
     vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_list )
 
 def test_afanasySubmit():
-    start_frame = 1
-    end_frame   = 1
-    step_size   = 1
-    priority    = 99
+    vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_list )
     afanasySubmit.sendJob(  vrscene_list, priority=50 )
 
 def test_s3_folderIO():
@@ -34,11 +31,16 @@ def test_getAnimStartEnd():
 def test_upload_image_s3():
     exr = '/data_local/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/images/masterLayer/cloudtest_v002/persp1/cloudtest_v002_masterLayer.exr'
     upload_image_s3( vrscene_list[0]  , exr , data_local , 3 , 3 , 1 )
-    print "Hello"
 
-test_upload_image_s3()
+def test_getDependencies():
+    assets = vraySceneSync.getDependencies( vrscene_list[0] )
+    print assets
+
+
+#test_upload_image_s3()
+#test_getDependencies()
 #test_s3_fileio()
 #test_s3_folderIO()
-#test_afanasySubmit()
+test_afanasySubmit()
 #test_getOutputImagePath()
 #test_getAnimStartEnd()
