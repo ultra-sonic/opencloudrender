@@ -26,4 +26,5 @@ def getDependencies( vrscene_path ):
         #print "recursing into: " + included_scene
         assets.extend( getDependencies( included_scene ) )
 
+    assets.extend( included_vrscenes )
     return assets

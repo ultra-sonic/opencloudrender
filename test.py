@@ -13,7 +13,7 @@ def test_s3_fileio():
 
 def test_afanasySubmit():
     vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_list )
-    afanasySubmit.sendJob(  vrscene_list, priority=50 )
+    #afanasySubmit.sendJob(  vrscene_list, priority=50 )
 
 def test_s3_folderIO():
     folder_name = '/official/00002/test/jjj/uiguig/hhh'
