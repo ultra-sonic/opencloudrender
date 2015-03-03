@@ -4,7 +4,7 @@ from fbcloudrender import upload_image_s3
 vray_repo_bucket_name   = os.environ['VRAY_REPO_BUCKET']
 data_bucket_name        = os.environ['DATA_BUCKET']
 data_local              = os.environ['DATA_LOCAL']
-vrscene_list = [ '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v004.vrscene' ]
+vrscene_list = [ '/blackout/volume1/DEFAULT_PROJECT/04_CGI/_workarea/omarkowski/MAYA/cloudtest_v005.vrscene' ]
 
 
 def test_s3_fileio():
@@ -13,7 +13,7 @@ def test_s3_fileio():
 
 def test_afanasySubmit():
     vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_list )
-    #afanasySubmit.sendJob(  vrscene_list, priority=50 )
+    afanasySubmit.sendJob(  vrscene_list, priority=50 )
 
 def test_s3_folderIO():
     folder_name = '/official/00002/test/jjj/uiguig/hhh'
