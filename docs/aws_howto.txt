@@ -8,6 +8,22 @@ aws_access_key_id = YOURACCESSKEY
 aws_secret_access_key = YOURSECRETKEY
 
 
+
+
+
+		todo: keepalive afrender!!!
+				todo: imagemagick doPost() in der cloud!
+				todo: new afanasy build 2.0.4 - frame sequential!!!
+				todo: pimp vray parser -- [2015/Mar/2|23:35:50] warning: Scene is empty.
+
+				cronjob to check if "transport endpoint is connected!"
+				ls /mnt/vray-repo
+				fi returncode != 0 >>> umount s3fs >>> mount again
+
+
+
+
+
 s3fs:
 build:
 git clone https://github.com/s3fs-fuse/s3fs-fuse.git
@@ -42,7 +58,3 @@ delete keys in fstab - if present,but should be done through /etc/passwd-s3fs
 -----------------------------------------
 afanasy port forwarding!!!
 port 51000-51002 an den rechner durchreichen, der die farm überwachen soll! es könnte auch 51002 alleine reichen für afwatch!!!
-		todo: keepalive afrender!!!
-				todo: imagemagick doPost() in der cloud!
-				todo: new afanasy build 2.0.4 - frame sequential!!!
-				todo: pimp vray parser -- [2015/Mar/2|23:35:50] warning: Scene is empty.

@@ -97,7 +97,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
         key.set_metadata('gid', '1001')
         key.set_metadata('mode', '33277') #33204=rw-rw-r--   33277=rwxrwxr-x
         # todo - implement proper duplication of mode!
-        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=10)
+        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=50)
 
 
 

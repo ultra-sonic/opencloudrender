@@ -1,10 +1,23 @@
-import os , afanasySubmit , s3IO
+import os , afanasySubmit , s3IO , vraySceneSync
 from utils import validate_file_path
+
+data_bucket_name        = os.environ['DATA_BUCKET']
 
 def showUI():
     pass
 
 def upload_image_s3( vrscene , file_path , strip_path_prefix , start_frame , end_frame , step_size ):
+    """
+
+
+    :rtype : None
+    :param vrscene: 
+    :param file_path: 
+    :param strip_path_prefix: 
+    :param start_frame: 
+    :param end_frame: 
+    :param step_size: 
+    """
     padding = afanasySubmit.get_anim_frame_padding( vrscene )
     for frame_number in range( start_frame , end_frame+1 , step_size ):
         file_path_frame  = afanasySubmit.add_padding_to_image_path( file_path , padding ) % frame_number
@@ -12,4 +25,27 @@ def upload_image_s3( vrscene , file_path , strip_path_prefix , start_frame , end
         s3IO.upload_file( data_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
 
 def upload_image_ftp( file_path , strip_path_prefix ):
+    """
+
+
+    :rtype : None
+    :param file_path: 
+    :param strip_path_prefix: 
+    """
     pass
+
+def sync_rendered_images( vrscene_path  ):
+    pass
+    # get outout images from vrscene
+    # download them from s3
+    # add a listen mode to keep downloading new files as the appear and exit when all files are finished
+
+def submit_vrscene( vrscene_path ):
+    """
+
+
+    :rtype : None
+    :param vrscene_path: 
+    """
+    #vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_path )
+    afanasySubmit.sendJob(  vrscene_path, priority=50 )

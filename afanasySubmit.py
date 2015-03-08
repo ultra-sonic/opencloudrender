@@ -2,44 +2,44 @@
 import os , af
 from utils import validate_file_path
 
-def sendJob( vrscene_list , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
+def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
     # UI Options -- TODO implement!!
 
     # Create a job.
-    job = af.Job( vrscene_list[0].split( '/' )[-1].rstrip( '.vrscene' ) )
+    job = af.Job( vrscene_path.split( '/' )[-1].rstrip( '.vrscene' ) )
 
     job.setNeedOS('linux')
     job.setPriority( priority )
     #user_name = 'render'
     #job.setUserName( user_name )
 
-    for vrscene_file in vrscene_list:
-        # todo implement full parsing of all vraySettingsOutput parameters into a dict!
-        output_image_path  = get_output_image_path( validate_file_path( vrscene_file ) )
-        anim_start_end = get_anim_start_end   (                     vrscene_file   ) # no validation needed anymore
-        start_frame = anim_start_end[0]
-        end_frame   = anim_start_end[1]
-        if start_frame_override > -1:
-            start_frame = start_frame_override
-        if end_frame_override > -1:
-            end_frame = end_frame_override
 
-        AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_file , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
+    # todo implement full parsing of all vraySettingsOutput parameters into a dict!
+    output_image_path  = get_output_image_path( validate_file_path( vrscene_path ) )
+    anim_start_end = get_anim_start_end   (                     vrscene_path   ) # no validation needed anymore
+    start_frame = anim_start_end[0]
+    end_frame   = anim_start_end[1]
+    if start_frame_override > -1:
+        start_frame = start_frame_override
+    if end_frame_override > -1:
+        end_frame = end_frame_override
 
-        print AFcmd
+    AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_path , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
 
-        block = af.Block( vrscene_file , 'vray' )
-        job.blocks.append(block)
+    print AFcmd
 
-        #block.setWorkingDirectory('/home/' + user_name )
+    block = af.Block( vrscene_path , 'vray' )
+    job.blocks.append(block)
 
-        block.setCommand( str( AFcmd ) , prefix=False )
-        # Set block tasks preview command arguments.
-        # block.setFiles('jpg/img.%04d.jpg')
+    #block.setWorkingDirectory('/home/' + user_name )
 
-        # Set block to numeric type, providing first, last frame and frames per host
-        block.setNumeric( int(  start_frame ) , int(  end_frame ), 1 , int( step_size ) )
-        block.setSequential( 10 )
+    block.setCommand( str( AFcmd ) , prefix=False )
+    # Set block tasks preview command arguments.
+    # block.setFiles('jpg/img.%04d.jpg')
+
+    # Set block to numeric type, providing first, last frame and frames per host
+    block.setNumeric( int(  start_frame ) , int(  end_frame ), 1 , int( step_size ) )
+    block.setSequential( 10 )
 
     # Send job to Afanasy server.
     result=job.send()
