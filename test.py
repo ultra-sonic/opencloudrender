@@ -1,5 +1,6 @@
-import os , vrayRepoSync , vraySceneSync , afanasySubmit , s3IO , utils
+import os , vrayRepoSync , vraySceneSync , afanasySubmit , s3IO , path_utils
 from fbcloudrender import upload_image_s3 , submit_vrscene , showUI
+from vray_utils import get_vrscene_data_tuple
 
 vray_repo_bucket_name   = os.environ.get( 'VRAY_REPO_BUCKET' , 'env var VRAY_REPO_BUCKET not set!' )
 data_bucket_name        = os.environ.get( 'DATA_BUCKET'      , 'env var DATA_BUCKET not set!' )
@@ -40,6 +41,11 @@ def test_getDependencies():
     assets = vraySceneSync.getDependencies( vrscene_path )
     print assets
 
+def test_UI():
+    vrscene_data_list = []
+    vrscene_data = get_vrscene_data_tuple( vrscene_path )
+    vrscene_data_list.append( vrscene_data )
+    showUI( vrscene_data_list )
 
 #test_upload_image_s3()
 #test_getDependencies()
@@ -47,6 +53,6 @@ def test_getDependencies():
 #test_s3_folderIO()
 #test_afanasySubmit()
 #test_getVraySettings()
-showUI()
+test_UI()
 #test_getOutputImagePath()
 #test_getAnimStartEnd()
