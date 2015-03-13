@@ -11,14 +11,24 @@ aws_secret_access_key = YOURSECRETKEY
 
 
 
-		todo: keepalive afrender!!!
+		?? check: keepalive afrender!!!
+				ephemeral /data_local
+				edit cloud fstab to match local options:
+					ro,endpoint=eu-west-1,allow_other,use_cache=/data_local/s3_cache,retries=10
+
 				todo: imagemagick doPost() in der cloud!
 				todo: new afanasy build 2.0.4 - frame sequential!!!
 				todo: pimp vray parser -- [2015/Mar/2|23:35:50] warning: Scene is empty.
 
-				cronjob to check if "transport endpoint is connected!"
-				ls /mnt/vray-repo
-				fi returncode != 0 >>> umount s3fs >>> mount again
+				startup script that does a "git pull" on cgru and fbcloudrender
+					maybe afanasy daemon itself before launching afrender
+				
+				OBSOLTE:
+					cronjob to check if "transport endpoint is connected!"
+					ls /mnt/vray-repo
+					fi returncode != 0 >>> umount s3fs >>> mount again
+				INSTEAD:
+					afanasy parser -> reboot if "transport endpoint is not connected!"
 
 
 
@@ -40,7 +50,6 @@ chmod go-rwx /etc/passwd-s3fs
 -----------------------------------
 -------    WHATS NEXT?    ---------
 -----------------------------------
-# render a fuckin frame! ;)
 # PUT CACHE ON EPHEMERAL LATER!
 
 s3fs vray-repo aws-buckets/vray-repo -oro,use_cache=/tmp,retries=2,nomultipart
