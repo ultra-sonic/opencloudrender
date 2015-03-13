@@ -14,11 +14,11 @@ def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_
     #job.setUserName( user_name )
 
 
-    # todo implement full parsing of all vraySettingsOutput parameters into a dict!
+    vray_settings = get_vray_settings()
     output_image_path  = get_output_image_path( validate_file_path( vrscene_path ) )
-    anim_start_end = get_anim_start_end   (                     vrscene_path   ) # no validation needed anymore
-    start_frame = anim_start_end[0]
-    end_frame   = anim_start_end[1]
+    # anim_start_end = get_anim_start_end   (                     vrscene_path   ) # no validation needed anymore
+    start_frame = vray_settings['anim_start']
+    end_frame   = vray_settings['anim_end']
     if start_frame_override > -1:
         start_frame = start_frame_override
     if end_frame_override > -1:
@@ -44,6 +44,26 @@ def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_
     # Send job to Afanasy server.
     result=job.send()
     return result
+
+def get_vray_settings( vrscene_path ):
+    vray_settings_dict={}
+    vray_settings_output_found=False
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
+            if line.find('SettingsOutput vraySettingsOutput {') > -1:
+                vray_settings_output_found=True
+            if vray_settings_output_found:
+                stripped_line=line.lstrip()
+                equals_sign_pos = stripped_line.find('=')
+                semi_colon_pos = stripped_line.find(';')
+                if equals_sign_pos > -1 and semi_colon_pos > -1:
+                    key   = stripped_line[ : equals_sign_pos ]
+                    value = stripped_line[ equals_sign_pos+1 : semi_colon_pos ]
+                    vray_settings_dict[ key ] = value
+                if line.find('}') > -1:
+                    return vray_settings_dict
+    raise "No Vray Settings found"
+
 
 
 

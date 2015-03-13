@@ -3,5 +3,6 @@ testData
 .DS_Store
 ._.DS_Store
 .idea
+pycharm.sh
 *.pyc
 FBI_farmSubmitter*

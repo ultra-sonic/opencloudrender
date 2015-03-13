@@ -1,10 +1,23 @@
 import os , afanasySubmit , s3IO , vraySceneSync
 from utils import validate_file_path
 
-data_bucket_name        = os.environ['DATA_BUCKET']
+from PySide.QtCore import *
+from PySide.QtGui import *
+from ui import exampleUI
+
+
+data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET not set!' )
+print "S3 Data Bucket: " + data_bucket_name
 
 def showUI():
-    pass
+    header = ['vrscene', 'start', 'end', 'camera']
+    vrscene_list = []
+    app = QApplication([])
+    win = exampleUI.MyWindow(vrscene_list, header)
+    win.show()
+    app.exec_()
+
+
 
 def upload_image_s3( vrscene , file_path , strip_path_prefix , start_frame , end_frame , step_size ):
     """
@@ -49,3 +62,6 @@ def submit_vrscene( vrscene_path ):
     """
     #vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_path )
     afanasySubmit.sendJob(  vrscene_path, priority=50 )
+
+if __name__ == '__main__':
+    showUI()

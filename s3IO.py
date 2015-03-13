@@ -11,7 +11,10 @@ MAX_SIZE = 20 * 1000 * 1000
 #size of parts when uploading in parts
 PART_SIZE = 6 * 1000 * 1000
 
-conn = boto.connect_s3()
+try:
+    conn = boto.connect_s3()
+except boto.exception.NoAuthHandlerFound:
+    print "Seems you are OFFLINE!"
 
 exclude_list = ['/docs/' , '/samples/']
 
