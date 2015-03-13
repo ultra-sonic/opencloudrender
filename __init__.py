@@ -10,9 +10,8 @@ data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET no
 print "S3 Data Bucket: " + data_bucket_name
 
 def showUI( vrscene_data_list ):
-    header = ['vrscene', 'start', 'end', 'camera']
     app = QApplication([])
-    win = exampleUI.MyWindow(vrscene_data_list, header)
+    win = exampleUI.MyWindow( )
     win.show()
     app.exec_()
 

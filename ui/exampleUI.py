@@ -11,17 +11,22 @@ tested with PySide112 and Python27/Python33 by vegaseat  15feb2013
 import operator
 from PySide.QtCore import *
 from PySide.QtGui import *
+from vray_utils import get_vrscene_data_tuple
+
 
 class MyWindow(QWidget):
-    def __init__(self, data_list, header, *args):
+    def __init__(self, *args):
         QWidget.__init__(self, *args)
         # setGeometry(x_pos, y_pos, width, height)
-        self.setGeometry(300, 200, 570, 450)
+        header = [ 'vrscene', 'start', 'end', 'camera']
+        data_list = []
+
+        self.setGeometry(300, 200, 600, 450)
         self.setWindowTitle("Click on column title to sort")
 
-        table_model = MyTableModel(self, data_list, header)
+        self.table_model = MyTableModel(self, data_list, header)
         table_view = QTableView()
-        table_view.setModel(table_model)
+        table_view.setModel(self.table_model)
         # set font
         font = QFont("Courier New", 14)
         table_view.setFont(font)
@@ -29,10 +34,29 @@ class MyWindow(QWidget):
         table_view.resizeColumnsToContents()
         # enable sorting
         table_view.setSortingEnabled(True)
+        #table_view.setDragEnabled(True)
+        self.setAcceptDrops(True)
 
         layout = QVBoxLayout(self)
         layout.addWidget(table_view)
         self.setLayout(layout)
+
+    def dragEnterEvent(self, e):
+
+        if e.mimeData().hasUrls():
+            e.accept()
+        else:
+            e.accept()
+
+    def dropEvent(self, e):
+        pathList=e.mimeData().urls()
+        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+        for url in pathList:
+            path=url.toLocalFile()
+            if path.endswith('.vrscene'):
+                vrscene_data = get_vrscene_data_tuple( path )
+                self.table_model.add( vrscene_data  )
+        self.emit(SIGNAL("layoutChanged()"))
 
 
 class MyTableModel(QAbstractTableModel):
@@ -40,6 +64,9 @@ class MyTableModel(QAbstractTableModel):
         QAbstractTableModel.__init__(self, parent, *args)
         self.mylist = mylist
         self.header = header
+    def add( self , vrscene_data ):
+        self.mylist.append( vrscene_data )
+        self.sort( 0 , Qt.AscendingOrder )
 
     def rowCount(self, parent):
         return len(self.mylist)
@@ -70,15 +97,3 @@ class MyTableModel(QAbstractTableModel):
         if order == Qt.DescendingOrder:
             self.mylist.reverse()
         self.emit(SIGNAL("layoutChanged()"))
-
-
-
-# use numbers for numeric data to sort properly
-
-data_list2 = [
-('ACETIC ACID', 117.9, 16.7, 1.049),
-('ACETIC ANHYDRIDE', 140.1, -73.1, 1.087),
-('ACETONE', 56.3, -94.7, 0.791),
-('XYLENES', 139.1, -47.8, 0.86)
-]
-

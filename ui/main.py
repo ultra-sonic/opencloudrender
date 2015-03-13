@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Fri Mar 13 17:16:23 2015
+# Created: Fri Mar 13 20:31:39 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,11 +12,12 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(598, 333)
+        MainWindow.resize(508, 329)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tableView = QtGui.QTableView(self.centralwidget)
         self.tableView.setGeometry(QtCore.QRect(40, 60, 421, 171))
+        self.tableView.setAcceptDrops(True)
         self.tableView.setObjectName("tableView")
         self.pushButton = QtGui.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(163, 250, 171, 32))
@@ -32,7 +33,7 @@ class Ui_MainWindow(object):
         self.pushButton_4.setObjectName("pushButton_4")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar()
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 598, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 508, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>333</height>
+    <width>508</width>
+    <height>329</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,9 @@
       <width>421</width>
       <height>171</height>
      </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -82,7 +85,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>598</width>
+     <width>508</width>
      <height>22</height>
     </rect>
    </property>

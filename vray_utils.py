@@ -1,4 +1,5 @@
 import os
+from path_utils import validate_file_path
 
 
 def get_vray_settings( vrscene_path ):
@@ -40,7 +41,7 @@ def get_output_image_path( vrscene_path ):
 
     raise Exception("No image_output_path found in vrscene" + vrscene_path )
 
-
+"""
 def get_anim_frame_padding( vrscene_path ):
     with open( vrscene_path , 'r' ) as vrscene:
         for line in vrscene:
@@ -49,7 +50,7 @@ def get_anim_frame_padding( vrscene_path ):
                 return anim_frame_padding
     raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
 
-"""
+
 def get_anim_start_end( vrscene_path ):
     anim_start = None
     anim_end   = None
