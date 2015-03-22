@@ -4,14 +4,17 @@ import hashlib
 
 import os.path
 import sys
-from utils import strip_file_path
+from path_utils import strip_file_path
 
 # max size in bytes before uploading in parts. between 1 and 5 GB recommended
 MAX_SIZE = 20 * 1000 * 1000
 #size of parts when uploading in parts
 PART_SIZE = 6 * 1000 * 1000
 
-conn = boto.connect_s3()
+try:
+    conn = boto.connect_s3()
+except boto.exception.NoAuthHandlerFound:
+    print "No s3 credentials found - you cannot submit!"
 
 exclude_list = ['/docs/' , '/samples/']
 
