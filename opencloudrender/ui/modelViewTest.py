@@ -11,7 +11,7 @@ tested with PySide112 and Python27/Python33 by vegaseat  15feb2013
 import operator
 from PySide.QtCore import *
 from PySide.QtGui import *
-from vray_utils import get_vrscene_data_tuple
+from opencloudrender.vray_utils import get_vrscene_data_tuple
 
 
 class MyWindow(QWidget):

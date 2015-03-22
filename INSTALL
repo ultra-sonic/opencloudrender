@@ -1,0 +1,10 @@
+Redhat , Centos < 7 , etc.:
+
+sudo yum install python-pyside
+
+On Centos 7 you have to compile & install PySide by yourself as described here:
+http://unix.stackexchange.com/questions/160496/how-to-install-pyside-package-for-centos-7
+
+Windows:
+follow the instrucions here
+http://wiki.qt.io/Pyside_Binaries_Windows
