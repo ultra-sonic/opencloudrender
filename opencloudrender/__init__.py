@@ -1,22 +1,24 @@
-import os , afanasySubmit , s3IO , vraySceneSync
+import os , sys , afanasySubmit , s3IO , vraySceneSync
 from path_utils import validate_file_path, add_padding_to_image_path
 
 from PySide.QtCore import *
-from PySide.QtGui import *
-from ui import modelViewTest
-#from ui import main
-
+from PySide import QtGui
+#from ui import modelViewTest
+import ui
 
 data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET not set!' )
 print "S3 Data Bucket: " + data_bucket_name
 
 def showUI():
-    app = QApplication([])
-    win = modelViewTest.MyWindow( )
-    win.show()
-    #win = main.Ui_MainWindow(  )
-    #win.setupUi( QWidget )
-    app.exec_()
+    app = QtGui.QApplication(sys.argv)
+    #win = modelViewTest.MyWindow( )
+    #win.show()
+    mySW = ui.ControlMainWindow()
+    mySW.show()
+    sys.exit(app.exec_())
+
+
+
 
 
 
