@@ -3,16 +3,19 @@ from path_utils import validate_file_path, add_padding_to_image_path
 
 from PySide.QtCore import *
 from PySide.QtGui import *
-from ui import exampleUI
+from ui import modelViewTest
+#from ui import main
 
 
 data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET not set!' )
 print "S3 Data Bucket: " + data_bucket_name
 
-def showUI( vrscene_data_list ):
+def showUI():
     app = QApplication([])
-    win = exampleUI.MyWindow( )
+    win = modelViewTest.MyWindow( )
     win.show()
+    #win = main.Ui_MainWindow(  )
+    #win.setupUi( QWidget )
     app.exec_()
 
 

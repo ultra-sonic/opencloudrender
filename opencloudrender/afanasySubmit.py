@@ -8,13 +8,11 @@ def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_
     # UI Options -- TODO implement!!
 
     # Create a job.
-    job = af.Job( vrscene_path.split( '/' )[-1].rstrip( '.vrscene' ) )
+    jobname = os.path.basename( vrscene_path ).rstrip( '.vrscene' )
+    job = af.Job( jobname )
 
     job.setNeedOS('linux')
     job.setPriority( priority )
-    #user_name = 'render'
-    #job.setUserName( user_name )
-
 
     vray_settings = get_vray_settings()
     output_image_path  = get_output_image_path( validate_file_path( vrscene_path ) )
