@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main.ui'
+# Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Fri Mar 13 20:31:39 2015
+# Created: Mon Mar 23 19:28:48 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,28 +12,28 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(508, 329)
+        MainWindow.resize(987, 332)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.tableView = QtGui.QTableView(self.centralwidget)
-        self.tableView.setGeometry(QtCore.QRect(40, 60, 421, 171))
-        self.tableView.setAcceptDrops(True)
-        self.tableView.setObjectName("tableView")
-        self.pushButton = QtGui.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(163, 250, 171, 32))
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton_2 = QtGui.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(40, 250, 111, 32))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.pushButton_3 = QtGui.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(340, 250, 114, 32))
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.pushButton_4 = QtGui.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(160, 20, 151, 32))
-        self.pushButton_4.setObjectName("pushButton_4")
+        self.vrscenesTableView = QtGui.QTableView(self.centralwidget)
+        self.vrscenesTableView.setGeometry(QtCore.QRect(40, 60, 911, 171))
+        self.vrscenesTableView.setAcceptDrops(True)
+        self.vrscenesTableView.setObjectName("vrscenesTableView")
+        self.syncAssetsAndSubmitButton = QtGui.QPushButton(self.centralwidget)
+        self.syncAssetsAndSubmitButton.setGeometry(QtCore.QRect(400, 250, 171, 32))
+        self.syncAssetsAndSubmitButton.setObjectName("syncAssetsAndSubmitButton")
+        self.syncAssetsButton = QtGui.QPushButton(self.centralwidget)
+        self.syncAssetsButton.setGeometry(QtCore.QRect(40, 250, 111, 32))
+        self.syncAssetsButton.setObjectName("syncAssetsButton")
+        self.syncImagesButton = QtGui.QPushButton(self.centralwidget)
+        self.syncImagesButton.setGeometry(QtCore.QRect(810, 250, 114, 32))
+        self.syncImagesButton.setObjectName("syncImagesButton")
+        self.addVrscenesButton = QtGui.QPushButton(self.centralwidget)
+        self.addVrscenesButton.setGeometry(QtCore.QRect(410, 20, 151, 32))
+        self.addVrscenesButton.setObjectName("addVrscenesButton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar()
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 508, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 987, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -45,8 +45,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton.setText(QtGui.QApplication.translate("MainWindow", "sync assets + submit", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_2.setText(QtGui.QApplication.translate("MainWindow", "sync assets", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_3.setText(QtGui.QApplication.translate("MainWindow", "sync images", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_4.setText(QtGui.QApplication.translate("MainWindow", "add .vrscene files", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncAssetsAndSubmitButton.setText(QtGui.QApplication.translate("MainWindow", "sync assets + submit", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncAssetsButton.setText(QtGui.QApplication.translate("MainWindow", "sync assets", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncImagesButton.setText(QtGui.QApplication.translate("MainWindow", "sync images", None, QtGui.QApplication.UnicodeUTF8))
+        self.addVrscenesButton.setText(QtGui.QApplication.translate("MainWindow", "add .vrscene files", None, QtGui.QApplication.UnicodeUTF8))
 
