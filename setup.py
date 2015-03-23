@@ -9,5 +9,5 @@ setup(name='OpenCloudRender',
       author_email='oliver@fullblownimages.com',
       url='https://www.python.org/sigs/distutils-sig/',
       packages=['opencloudrender'],
-      scripts=['bin/ocrSubmitUI.py']
+      scripts=['bin/ocrSubmitUI.py','bin/ocrSubmitUI.sh']
      )
