@@ -3,14 +3,14 @@ import os # , opencloudrender.vrayRepoSync , opencloudrender.vraySceneSync , ope
 #from opencloudrender.vray_utils import get_vrscene_data_tuple
 import opencloudrender as ocr
 
-vray_repo_bucket_name   = os.environ.get( 'VRAY_REPO_BUCKET' , 'env var VRAY_REPO_BUCKET not set!' )
+repo_bucket_name   = os.environ.get( 'VRAY_REPO_BUCKET' , 'env var VRAY_REPO_BUCKET not set!' )
 data_bucket_name        = os.environ.get( 'DATA_BUCKET'      , 'env var DATA_BUCKET not set!' )
 data_local              = os.environ.get( 'DATA_LOCAL'       , 'env var DATA_LOCAL not set!' )
 vrscene_path =  './testData/forestInstancer_v039_fbcloudrender_left_stereoCameraLeft.vrscene'
 
 
 def test_s3_fileio():
-    #vrayRepoSync.push( vray_repo_bucket_name )
+    #vrayRepoSync.push( repo_bucket_name )
     ocr.vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_path )
 
 def test_afanasySubmit():
@@ -18,8 +18,8 @@ def test_afanasySubmit():
 
 def test_s3_folderIO():
     folder_name = '/official/00002/test/jjj/uiguig/hhh'
-    folder_name = ocr.s3IO.create_folder( vray_repo_bucket_name , folder_name , recursive=True )
-    ocr.s3IO.test_permissions( vray_repo_bucket_name , folder_name )
+    folder_name = ocr.s3IO.create_folder( repo_bucket_name , folder_name , recursive=True )
+    ocr.s3IO.test_permissions( repo_bucket_name , folder_name )
 
 def test_getOutputImagePath():
     img_path_tuple = ocr.afanasySubmit.get_output_image_path( vrscene_path )

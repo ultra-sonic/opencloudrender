@@ -5,10 +5,10 @@ import operator
 class ControlMainWindow(QtGui.QMainWindow):
   def __init__(self, parent=None):
     super(ControlMainWindow, self).__init__(parent)
-    self.ui =  ocrSubmit.Ui_MainWindow()
+    self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
     self.ui.setupUi(self)
 
-class VrsceneTableModel(QtCore.QAbstractTableModel):
+class ScenesTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent, mylist, header, *args):
         QtCore.QAbstractTableModel.__init__(self, parent, *args)
         self.mylist = mylist
