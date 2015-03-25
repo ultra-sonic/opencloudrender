@@ -5,3 +5,4 @@ testData
 .idea
 pycharm.sh
 *.pyc
+build/
