@@ -10,11 +10,14 @@
     <height>295</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>OpenCloudRender</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableView" name="vrscenesTableView">
+   <widget class="QTableView" name="scenesTableView">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -31,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>110</y>
+      <y>120</y>
       <width>171</width>
       <height>32</height>
      </rect>
@@ -44,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>70</y>
+      <y>80</y>
       <width>171</width>
       <height>32</height>
      </rect>
@@ -57,7 +60,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>150</y>
+      <y>160</y>
       <width>171</width>
       <height>32</height>
      </rect>
@@ -67,10 +70,13 @@
     </property>
    </widget>
    <widget class="QPushButton" name="addScenesButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>30</y>
+      <y>20</y>
       <width>171</width>
       <height>32</height>
      </rect>
@@ -109,7 +115,7 @@
      </rect>
     </property>
     <property name="value">
-     <number>24</number>
+     <number>0</number>
     </property>
    </widget>
    <widget class="QLabel" name="dataBucketNameLabel">
@@ -136,6 +142,19 @@
     </property>
     <property name="text">
      <string>S3 Repository Bucket</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="dragDropLabel">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>50</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>drag&amp;drop only for now</string>
     </property>
    </widget>
   </widget>
