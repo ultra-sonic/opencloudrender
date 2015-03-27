@@ -8,7 +8,7 @@ setup(name='OpenCloudRender',
       author='Oliver Markowski',
       author_email='oliver@fullblownimages.com',
       url='somewhere on github',
-      package_dir = {'cgru_python': 'cgru', 'af_python': 'cgru/afanasy'},
-      packages=['opencloudrender' , 'af_python' , 'cgru_python'],
-      scripts=['bin/ocrSubmitUI.py','bin/ocrSubmitUI.sh']
+      package_dir = {'cgru_python': 'cgru/lib/cgru_python', 'af_python': 'cgru/afanasy/af_python'},
+      packages=['opencloudrender' ],
+      py_modules = ['af_python.af', 'cgru_python.cgruconfig', 'cgru_python.cgruutils', 'cgru_python.cgrupathmap' ],      scripts=['bin/ocrSubmitUI.py','bin/ocrSubmitUI.sh']
      )
