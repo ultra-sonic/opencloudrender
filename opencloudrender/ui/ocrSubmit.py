@@ -2,51 +2,75 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Mon Mar 23 19:28:48 2015
+# Created: Fri Mar 27 09:06:58 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide import QtCore, QtGui
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(987, 332)
-        self.centralwidget = QtGui.QWidget(MainWindow)
+class Ui_OpenCloudRenderSubmit(object):
+    def setupUi(self, OpenCloudRenderSubmit):
+        OpenCloudRenderSubmit.setObjectName("OpenCloudRenderSubmit")
+        OpenCloudRenderSubmit.resize(1400, 300)
+        OpenCloudRenderSubmit.setAcceptDrops(True)
+        self.centralwidget = QtGui.QWidget(OpenCloudRenderSubmit)
         self.centralwidget.setObjectName("centralwidget")
-        self.vrscenesTableView = QtGui.QTableView(self.centralwidget)
-        self.vrscenesTableView.setGeometry(QtCore.QRect(40, 60, 911, 171))
-        self.vrscenesTableView.setAcceptDrops(True)
-        self.vrscenesTableView.setObjectName("vrscenesTableView")
+        self.scenesTableView = QtGui.QTableView(self.centralwidget)
+        self.scenesTableView.setGeometry(QtCore.QRect(40, 20, 1161, 170))
+        self.scenesTableView.setAcceptDrops(True)
+        self.scenesTableView.setObjectName("scenesTableView")
         self.syncAssetsAndSubmitButton = QtGui.QPushButton(self.centralwidget)
-        self.syncAssetsAndSubmitButton.setGeometry(QtCore.QRect(400, 250, 171, 32))
+        self.syncAssetsAndSubmitButton.setGeometry(QtCore.QRect(1210, 120, 171, 32))
         self.syncAssetsAndSubmitButton.setObjectName("syncAssetsAndSubmitButton")
         self.syncAssetsButton = QtGui.QPushButton(self.centralwidget)
-        self.syncAssetsButton.setGeometry(QtCore.QRect(40, 250, 111, 32))
+        self.syncAssetsButton.setGeometry(QtCore.QRect(1210, 80, 171, 32))
         self.syncAssetsButton.setObjectName("syncAssetsButton")
         self.syncImagesButton = QtGui.QPushButton(self.centralwidget)
-        self.syncImagesButton.setGeometry(QtCore.QRect(810, 250, 114, 32))
+        self.syncImagesButton.setGeometry(QtCore.QRect(1210, 160, 171, 32))
         self.syncImagesButton.setObjectName("syncImagesButton")
-        self.addVrscenesButton = QtGui.QPushButton(self.centralwidget)
-        self.addVrscenesButton.setGeometry(QtCore.QRect(410, 20, 151, 32))
-        self.addVrscenesButton.setObjectName("addVrscenesButton")
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.addScenesButton = QtGui.QPushButton(self.centralwidget)
+        self.addScenesButton.setEnabled(False)
+        self.addScenesButton.setGeometry(QtCore.QRect(1210, 20, 171, 32))
+        self.addScenesButton.setObjectName("addScenesButton")
+        self.dataBucketName = QtGui.QLineEdit(self.centralwidget)
+        self.dataBucketName.setGeometry(QtCore.QRect(140, 230, 431, 20))
+        self.dataBucketName.setObjectName("dataBucketName")
+        self.repoBucketName = QtGui.QLineEdit(self.centralwidget)
+        self.repoBucketName.setGeometry(QtCore.QRect(770, 230, 431, 20))
+        self.repoBucketName.setObjectName("repoBucketName")
+        self.uploadProgressBar = QtGui.QProgressBar(self.centralwidget)
+        self.uploadProgressBar.setGeometry(QtCore.QRect(40, 200, 1331, 23))
+        self.uploadProgressBar.setProperty("value", 0)
+        self.uploadProgressBar.setObjectName("uploadProgressBar")
+        self.dataBucketNameLabel = QtGui.QLabel(self.centralwidget)
+        self.dataBucketNameLabel.setGeometry(QtCore.QRect(41, 230, 100, 20))
+        self.dataBucketNameLabel.setObjectName("dataBucketNameLabel")
+        self.repoBucketNameLabel = QtGui.QLabel(self.centralwidget)
+        self.repoBucketNameLabel.setGeometry(QtCore.QRect(630, 230, 140, 20))
+        self.repoBucketNameLabel.setObjectName("repoBucketNameLabel")
+        self.dragDropOnlyLabel = QtGui.QLabel(self.centralwidget)
+        self.dragDropOnlyLabel.setGeometry(QtCore.QRect(1220, 50, 151, 20))
+        self.dragDropOnlyLabel.setObjectName("dragDropOnlyLabel")
+        OpenCloudRenderSubmit.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar()
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 987, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1400, 22))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtGui.QStatusBar(MainWindow)
+        OpenCloudRenderSubmit.setMenuBar(self.menubar)
+        self.statusbar = QtGui.QStatusBar(OpenCloudRenderSubmit)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        OpenCloudRenderSubmit.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(OpenCloudRenderSubmit)
+        QtCore.QMetaObject.connectSlotsByName(OpenCloudRenderSubmit)
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.syncAssetsAndSubmitButton.setText(QtGui.QApplication.translate("MainWindow", "sync assets + submit", None, QtGui.QApplication.UnicodeUTF8))
-        self.syncAssetsButton.setText(QtGui.QApplication.translate("MainWindow", "sync assets", None, QtGui.QApplication.UnicodeUTF8))
-        self.syncImagesButton.setText(QtGui.QApplication.translate("MainWindow", "sync images", None, QtGui.QApplication.UnicodeUTF8))
-        self.addVrscenesButton.setText(QtGui.QApplication.translate("MainWindow", "add .vrscene files", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, OpenCloudRenderSubmit):
+        OpenCloudRenderSubmit.setWindowTitle(QtGui.QApplication.translate("OpenCloudRenderSubmit", "OpenCloudRender", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncAssetsAndSubmitButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync assets + submit", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncAssetsButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync assets", None, QtGui.QApplication.UnicodeUTF8))
+        self.syncImagesButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync images", None, QtGui.QApplication.UnicodeUTF8))
+        self.addScenesButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "add .vrscene/.ass files", None, QtGui.QApplication.UnicodeUTF8))
+        self.dataBucketNameLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "S3 Data Bucket", None, QtGui.QApplication.UnicodeUTF8))
+        self.repoBucketNameLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "S3 Repository Bucket", None, QtGui.QApplication.UnicodeUTF8))
+        self.dragDropOnlyLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "drag&drop only for now", None, QtGui.QApplication.UnicodeUTF8))
 

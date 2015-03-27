@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>OpenCloudRenderSubmit</class>
+ <widget class="QMainWindow" name="OpenCloudRenderSubmit">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>987</width>
-    <height>332</height>
+    <width>1400</width>
+    <height>300</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>OpenCloudRender</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableView" name="vrscenesTableView">
+   <widget class="QTableView" name="scenesTableView">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>60</y>
-      <width>911</width>
-      <height>171</height>
+      <y>20</y>
+      <width>1161</width>
+      <height>170</height>
      </rect>
     </property>
     <property name="acceptDrops">
@@ -30,8 +33,8 @@
    <widget class="QPushButton" name="syncAssetsAndSubmitButton">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>250</y>
+      <x>1210</x>
+      <y>120</y>
       <width>171</width>
       <height>32</height>
      </rect>
@@ -43,9 +46,9 @@
    <widget class="QPushButton" name="syncAssetsButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>250</y>
-      <width>111</width>
+      <x>1210</x>
+      <y>80</y>
+      <width>171</width>
       <height>32</height>
      </rect>
     </property>
@@ -56,9 +59,9 @@
    <widget class="QPushButton" name="syncImagesButton">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>250</y>
-      <width>114</width>
+      <x>1210</x>
+      <y>160</y>
+      <width>171</width>
       <height>32</height>
      </rect>
     </property>
@@ -66,17 +69,92 @@
      <string>sync images</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="addVrscenesButton">
+   <widget class="QPushButton" name="addScenesButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>1210</x>
       <y>20</y>
-      <width>151</width>
+      <width>171</width>
       <height>32</height>
      </rect>
     </property>
     <property name="text">
-     <string>add .vrscene files</string>
+     <string>add .vrscene/.ass files</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="dataBucketName">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>230</y>
+      <width>431</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="repoBucketName">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>230</y>
+      <width>431</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="uploadProgressBar">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>200</y>
+      <width>1331</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="dataBucketNameLabel">
+    <property name="geometry">
+     <rect>
+      <x>41</x>
+      <y>230</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>S3 Data Bucket</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="repoBucketNameLabel">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>230</y>
+      <width>140</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>S3 Repository Bucket</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="dragDropOnlyLabel">
+    <property name="geometry">
+     <rect>
+      <x>1220</x>
+      <y>50</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>drag&amp;drop only for now</string>
     </property>
    </widget>
   </widget>
@@ -85,7 +163,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>987</width>
+     <width>1400</width>
      <height>22</height>
     </rect>
    </property>

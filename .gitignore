@@ -6,3 +6,4 @@ testData
 pycharm.sh
 *.pyc
 build/
+.boto
