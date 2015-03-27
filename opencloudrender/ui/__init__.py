@@ -11,23 +11,26 @@ class ControlMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(ControlMainWindow, self).__init__(parent)
 
-        #todo implement this as an .openclouderender json file
-        self.repo_bucket_name = os.environ.get( 'VRAY_REPO_BUCKET' , 'vray-repo' )
-        self.data_bucket_name = os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' )
-
-
-        self.header = [ 'scene', 'start', 'end', 'camera' , 'path' ]
+        self.header = [ 'scenepath', 'start', 'end', 'camera' ]
         self.data_list = []
         self.table_model = ScenesTableModel(self, self.data_list, self.header) #maybe skip passing of data_list and header and use parent.data_list in ScenesTableModel
 
         self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
         self.ui.setupUi(self)
+
+        #Table
         self.ui.scenesTableView.setModel( self.table_model )
+
+        #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
+
+        #Buckets
+        self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) #todo implement this as an .openclouderender json file
+        self.ui.repoBucketName.setText( os.environ.get( 'VRAY_REPO_BUCKET' , 'vray-repo' ) )
 
     def syncAssets(self):
         for scene in self.data_list:
-            uploadWithDependencies( self.data_bucket_name , scene[4] )
+            uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] )
 
     def dragEnterEvent(self, e):
 
@@ -44,6 +47,7 @@ class ControlMainWindow(QtGui.QMainWindow):
             if os.path.isfile(path) and path.endswith('.vrscene'):
                 vrscene_data = get_vrscene_data_tuple( path )
                 self.table_model.add( vrscene_data  )
+                self.ui.scenesTableView.resizeColumnsToContents()
             #todo implement folder handling here
         self.emit(QtCore.SIGNAL("layoutChanged()"))
 
@@ -71,7 +75,10 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
             return None
         elif role != QtCore.Qt.DisplayRole:
             return None
-        return self.mylist[index.row()][index.column()]
+        if index.row() == 0:
+            return os.path.basename( self.mylist[index.row()][index.column()] )
+        else:
+            return self.mylist[index.row()][index.column()]
 
     def headerData(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:

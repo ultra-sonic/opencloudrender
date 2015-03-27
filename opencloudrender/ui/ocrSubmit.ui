@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1034</width>
-    <height>295</height>
+    <width>1400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -22,7 +22,7 @@
      <rect>
       <x>40</x>
       <y>20</y>
-      <width>790</width>
+      <width>1161</width>
       <height>170</height>
      </rect>
     </property>
@@ -33,7 +33,7 @@
    <widget class="QPushButton" name="syncAssetsAndSubmitButton">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>1210</x>
       <y>120</y>
       <width>171</width>
       <height>32</height>
@@ -46,7 +46,7 @@
    <widget class="QPushButton" name="syncAssetsButton">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>1210</x>
       <y>80</y>
       <width>171</width>
       <height>32</height>
@@ -59,7 +59,7 @@
    <widget class="QPushButton" name="syncImagesButton">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>1210</x>
       <y>160</y>
       <width>171</width>
       <height>32</height>
@@ -75,7 +75,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>1210</x>
       <y>20</y>
       <width>171</width>
       <height>32</height>
@@ -88,19 +88,19 @@
    <widget class="QLineEdit" name="dataBucketName">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>230</y>
-      <width>250</width>
+      <width>431</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="vrayRepoBucketName">
+   <widget class="QLineEdit" name="repoBucketName">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>770</x>
       <y>230</y>
-      <width>250</width>
+      <width>431</width>
       <height>20</height>
      </rect>
     </property>
@@ -110,7 +110,7 @@
      <rect>
       <x>40</x>
       <y>200</y>
-      <width>961</width>
+      <width>1331</width>
       <height>23</height>
      </rect>
     </property>
@@ -131,10 +131,10 @@
      <string>S3 Data Bucket</string>
     </property>
    </widget>
-   <widget class="QLabel" name="vrayRepoBucketNameLabel">
+   <widget class="QLabel" name="repoBucketNameLabel">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>630</x>
       <y>230</y>
       <width>140</width>
       <height>20</height>
@@ -144,10 +144,10 @@
      <string>S3 Repository Bucket</string>
     </property>
    </widget>
-   <widget class="QLabel" name="dragDropLabel">
+   <widget class="QLabel" name="dragDropOnlyLabel">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>1220</x>
       <y>50</y>
       <width>151</width>
       <height>20</height>
@@ -163,7 +163,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1034</width>
+     <width>1400</width>
      <height>22</height>
     </rect>
    </property>
