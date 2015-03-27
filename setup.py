@@ -7,7 +7,8 @@ setup(name='OpenCloudRender',
       description='cloud-render interface for popular render-engines',
       author='Oliver Markowski',
       author_email='oliver@fullblownimages.com',
-      url='https://www.python.org/sigs/distutils-sig/',
-      packages=['opencloudrender'],
+      url='somewhere on github',
+      package_dir = {'cgru_python': 'cgru', 'af_python': 'cgru/afanasy'},
+      packages=['opencloudrender' , 'af_python' , 'cgru_python'],
       scripts=['bin/ocrSubmitUI.py','bin/ocrSubmitUI.sh']
      )
