@@ -27,7 +27,7 @@ def create_bucket( bucket_name ):
         try:
             bucket = conn.get_bucket(bucket_name)
         except boto.exception.S3ResponseError as e:
-            print "Bucket does not exist!"
+            print "Bucket " + bucket_name + "does not exist!"
             raise e
             #removed auto creation of bucket - todo make confirm dialog for that
             #bucket = conn.create_bucket(bucket_name,
