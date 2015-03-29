@@ -26,9 +26,12 @@ def create_bucket( bucket_name ):
     if bucket_name not in existing_buckets.keys():
         try:
             bucket = conn.get_bucket(bucket_name)
-        except boto.exception.S3ResponseError:
-            bucket = conn.create_bucket(bucket_name,
-                                        location=boto.s3.connection.Location.EU)
+        except boto.exception.S3ResponseError as e:
+            print "Bucket " + bucket_name + "does not exist!"
+            raise e
+            #removed auto creation of bucket - todo make confirm dialog for that
+            #bucket = conn.create_bucket(bucket_name,
+            #                            location=boto.s3.connection.Location.EU)
         existing_buckets[ bucket_name ] = bucket
         return bucket
     else:
@@ -88,7 +91,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
         if key != None:
             destpath_md5 =  key.etag[1:-1]
             if destpath_md5 == sourcepath_md5:
-                print "File is indentical: {0}".format( filename )
+                #print "File is identical: {0}".format( filename )
                 continue
         else:
             key = boto.s3.key.Key( bucket )
@@ -141,8 +144,8 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
         key.set_metadata( 'gid' , gid )
         key.set_contents_from_string('')
         print 'Successfully created: ' + folder_name
-    else:
-        print 'Folder already exists: ' + folder_name
+    #else:
+        #print 'Folder already exists: ' + folder_name
     return folder_name
 
 
