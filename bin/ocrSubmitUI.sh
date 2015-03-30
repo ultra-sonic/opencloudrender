@@ -15,6 +15,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export CGRU_LOCATION=$DIR/../cgru
 export AF_ROOT=${CGRU_LOCATION}/afanasy
 export PYTHONPATH=${CGRU_LOCATION}/lib/python:${AF_ROOT}/python:$PYTHONPATH
+echo PYTHONPATH: $PYTHONPATH
 #afanasy done
 
 $DIR/ocrSubmitUI.py

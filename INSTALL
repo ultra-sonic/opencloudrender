@@ -1,10 +1,45 @@
 Redhat , Centos < 7 , etc.:
 
-sudo yum install python-pyside
 
-On Centos 7 you have to compile & install PySide by yourself as described here:
-http://unix.stackexchange.com/questions/160496/how-to-install-pyside-package-for-centos-7
 
-Windows:
-follow the instrucions here
-http://wiki.qt.io/Pyside_Binaries_Windows
+PREREQUISITES:
+
+1. PySide
+	Linux - yum:
+		sudo yum install python-pyside
+	Linux - apt-get:
+		no idea - please update
+
+	On Centos 7 you have to compile & install PySide by yourself as described here:
+		http://unix.stackexchange.com/questions/160496/how-to-install-pyside-package-for-centos-7
+
+	OSX:
+		install macports and do:
+		sudo port install py-pyside
+
+	Windows:
+		follow the instrucions here
+		http://wiki.qt.io/Pyside_Binaries_Windows
+2. boto
+	from source:
+		git clone https://github.com/boto/boto.git
+		cd boto
+		sudo python setup.py install
+
+
+INSTALL:
+
+	git clone adresse here
+	cd opencloudrender
+	#get cgru rendermanger - submodule
+	git submodule init
+	git submodule update
+
+CONFIGURE:
+	you must configure the hostname or ip of your afserver here:
+		cgru/afanasy/config_default.json
+	just change this line:
+			"af_servername":"yourserver.here.com",
+
+LAUNCH:
+	just launch bin/ocrSubmitUI.sh (or .bat)

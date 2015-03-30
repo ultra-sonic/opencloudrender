@@ -7,3 +7,4 @@ pycharm.sh
 *.pyc
 build/
 .boto
+*.*~
