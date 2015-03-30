@@ -14,7 +14,7 @@ def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_
     job.setNeedOS('linux')
     job.setPriority( priority )
 
-    vray_settings = get_vray_settings()
+    vray_settings = get_vray_settings( vrscene_path )
     output_image_path  = get_output_image_path( validate_file_path( vrscene_path ) )
     # anim_start_end = get_anim_start_end   (                     vrscene_path   ) # no validation needed anymore
     start_frame = vray_settings['anim_start']

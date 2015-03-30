@@ -27,7 +27,7 @@ def create_bucket( bucket_name ):
         try:
             bucket = conn.get_bucket(bucket_name)
         except boto.exception.S3ResponseError as e:
-            print "Bucket " + bucket_name + "does not exist!"
+            print "Bucket " + bucket_name + " does not exist!"
             raise e
             #removed auto creation of bucket - todo make confirm dialog for that
             #bucket = conn.create_bucket(bucket_name,
@@ -50,8 +50,13 @@ def percent_cb(complete, total):
     sys.stdout.flush()
 
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
-    create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
-    upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
+    if os.path.isfile( file_path ):
+        create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
+        upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
+        return 0
+    else:
+        print "Warning - file not found: " + file_path
+        return 1
 
 def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' ):
 
@@ -103,7 +108,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
         key.set_metadata('gid', '1001')
         key.set_metadata('mode', '33277') #33204=rw-rw-r--   33277=rwxrwxr-x
         # todo - implement proper duplication of mode!
-        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=50)
+        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=100)
 
 
 

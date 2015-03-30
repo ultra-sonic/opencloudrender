@@ -31,7 +31,6 @@ PREREQUISITES:
 		cd boto
 		sudo python setup.py install
 
-
 INSTALL:
 
 	git clone adresse here
@@ -45,6 +44,9 @@ CONFIGURE:
 		cgru/afanasy/config_default.json
 	just change this line:
 			"af_servername":"yourserver.here.com",
+
+	please copy .boto-default to your user-home and rename it to .boto
+	now fill in your own aws credentials - also remove those <> brackets
 
 LAUNCH:
 	just launch bin/ocrSubmitUI.sh (or .bat)
