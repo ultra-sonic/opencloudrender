@@ -17,7 +17,7 @@ def get_vray_settings( vrscene_path ):
                 if equals_sign_pos > -1 and semi_colon_pos > -1:
                     key   = stripped_line[ : equals_sign_pos ]
                     value = stripped_line[ equals_sign_pos+1 : semi_colon_pos ]
-                    vray_settings_dict[ key ] = value
+                    vray_settings_dict[ key ] = value.lstrip('"').rstrip('"')
                 if line.find('}') > -1:
                     return vray_settings_dict
     raise "No Vray Settings found"
@@ -29,6 +29,7 @@ def get_vrscene_data_tuple( vrscene_path ):
 
 
 def get_output_image_path( vrscene_path ):
+    print "OBSOLETE FUNCTION - use get_vray_settings instead"
     img_file = None
     img_dir  = None
     with open( vrscene_path , 'r' ) as vrscene:
