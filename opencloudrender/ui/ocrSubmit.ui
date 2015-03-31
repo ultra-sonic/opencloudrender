@@ -90,7 +90,7 @@
      <rect>
       <x>140</x>
       <y>230</y>
-      <width>431</width>
+      <width>341</width>
       <height>20</height>
      </rect>
     </property>
@@ -98,9 +98,9 @@
    <widget class="QLineEdit" name="repoBucketName">
     <property name="geometry">
      <rect>
-      <x>770</x>
+      <x>630</x>
       <y>230</y>
-      <width>431</width>
+      <width>341</width>
       <height>20</height>
      </rect>
     </property>
@@ -134,7 +134,7 @@
    <widget class="QLabel" name="repoBucketNameLabel">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>490</x>
       <y>230</y>
       <width>140</width>
       <height>20</height>
@@ -155,6 +155,29 @@
     </property>
     <property name="text">
      <string>drag&amp;drop only for now</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="vrayVersionComboBox">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>225</y>
+      <width>121</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="vrayVersionLabel">
+    <property name="geometry">
+     <rect>
+      <x>980</x>
+      <y>230</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>V-Ray Version</string>
     </property>
    </widget>
   </widget>
