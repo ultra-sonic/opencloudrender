@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Fri Mar 27 09:06:58 2015
+# Created: Tue Mar 31 22:25:09 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,10 +34,10 @@ class Ui_OpenCloudRenderSubmit(object):
         self.addScenesButton.setGeometry(QtCore.QRect(1210, 20, 171, 32))
         self.addScenesButton.setObjectName("addScenesButton")
         self.dataBucketName = QtGui.QLineEdit(self.centralwidget)
-        self.dataBucketName.setGeometry(QtCore.QRect(140, 230, 431, 20))
+        self.dataBucketName.setGeometry(QtCore.QRect(140, 230, 341, 20))
         self.dataBucketName.setObjectName("dataBucketName")
         self.repoBucketName = QtGui.QLineEdit(self.centralwidget)
-        self.repoBucketName.setGeometry(QtCore.QRect(770, 230, 431, 20))
+        self.repoBucketName.setGeometry(QtCore.QRect(630, 230, 341, 20))
         self.repoBucketName.setObjectName("repoBucketName")
         self.uploadProgressBar = QtGui.QProgressBar(self.centralwidget)
         self.uploadProgressBar.setGeometry(QtCore.QRect(40, 200, 1331, 23))
@@ -47,11 +47,17 @@ class Ui_OpenCloudRenderSubmit(object):
         self.dataBucketNameLabel.setGeometry(QtCore.QRect(41, 230, 100, 20))
         self.dataBucketNameLabel.setObjectName("dataBucketNameLabel")
         self.repoBucketNameLabel = QtGui.QLabel(self.centralwidget)
-        self.repoBucketNameLabel.setGeometry(QtCore.QRect(630, 230, 140, 20))
+        self.repoBucketNameLabel.setGeometry(QtCore.QRect(490, 230, 140, 20))
         self.repoBucketNameLabel.setObjectName("repoBucketNameLabel")
         self.dragDropOnlyLabel = QtGui.QLabel(self.centralwidget)
         self.dragDropOnlyLabel.setGeometry(QtCore.QRect(1220, 50, 151, 20))
         self.dragDropOnlyLabel.setObjectName("dragDropOnlyLabel")
+        self.vrayVersionComboBox = QtGui.QComboBox(self.centralwidget)
+        self.vrayVersionComboBox.setGeometry(QtCore.QRect(1080, 225, 121, 26))
+        self.vrayVersionComboBox.setObjectName("vrayVersionComboBox")
+        self.vrayVersionLabel = QtGui.QLabel(self.centralwidget)
+        self.vrayVersionLabel.setGeometry(QtCore.QRect(980, 230, 91, 20))
+        self.vrayVersionLabel.setObjectName("vrayVersionLabel")
         OpenCloudRenderSubmit.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar()
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1400, 22))
@@ -73,4 +79,5 @@ class Ui_OpenCloudRenderSubmit(object):
         self.dataBucketNameLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "S3 Data Bucket", None, QtGui.QApplication.UnicodeUTF8))
         self.repoBucketNameLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "S3 Repository Bucket", None, QtGui.QApplication.UnicodeUTF8))
         self.dragDropOnlyLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "drag&drop only for now", None, QtGui.QApplication.UnicodeUTF8))
+        self.vrayVersionLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "V-Ray Version", None, QtGui.QApplication.UnicodeUTF8))
 
