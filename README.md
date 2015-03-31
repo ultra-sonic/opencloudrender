@@ -1,7 +1,3 @@
-Redhat , Centos < 7 , etc.:
-
-
-
 PREREQUISITES:
 
 0. Windows only:
@@ -40,6 +36,7 @@ INSTALL:
 	git submodule update
 
 CONFIGURE:
+
 	you must configure the hostname or ip of your afserver here:
 		cgru/afanasy/config_default.json
 	just change this line:
@@ -49,4 +46,5 @@ CONFIGURE:
 	now fill in your own aws credentials - also remove those <> brackets
 
 LAUNCH:
+
 	just launch bin/ocrSubmitUI.sh (or .bat)
