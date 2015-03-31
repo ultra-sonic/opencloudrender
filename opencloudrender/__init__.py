@@ -43,7 +43,7 @@ def upload_image_ftp( file_path , strip_path_prefix ):
     """
     pass
 
-def download_image_s3( data_bucket_name , scene_path , listen=False ):
+def download_image_s3( data_bucket_name , scene_path , progress_bar=None , listen=False ):
     # get outout images from vrscene
     # download them from s3
     vray_settings = get_vray_settings( scene_path )
@@ -57,7 +57,7 @@ def download_image_s3( data_bucket_name , scene_path , listen=False ):
         # todo add a listen mode to keep downloading new files as they appear and exit when all files are finished
         file_path_frame  = add_padding_to_image_path( output_image_path , padding ) % frame_number
         frame_list.append( validate_file_path( file_path_frame ) )
-    s3IO.download_files( data_bucket_name , frame_list )
+    s3IO.download_files( data_bucket_name , frame_list , progress_bar=progress_bar )
 
 def submit_vrscene( vrscene_path ):
     """

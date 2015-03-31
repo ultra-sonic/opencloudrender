@@ -49,25 +49,37 @@ def percent_cb(complete, total):
     sys.stdout.write( "progress {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
-def download_files(data_bucket_name, frame_list ):
-    bucket=create_bucket( data_bucket_name )
-    bucket_list = bucket.list() # todo this will ultimately lead to performance issues >>> make smarter
+def download_files(data_bucket_name, frame_list , progress_bar=None ):
+    bucket=create_bucket( data_bucket_name ) # todo implement a get_bucket function
+    dir_name=os.path.dirname( frame_list[0] ).lstrip('/')
+    bucket_list = bucket.list( prefix=dir_name )
+    download_frame_dict = {}
     for object in bucket_list:
         keyString = '/' + str(object.key)
         #if keyString.endswith('exr'):
         #    print("Found exr: " + keyString )
         doubleDashKeyString = os.path.normpath( '/' + keyString ) # this is just a workaround for stupid windoze to write to the network share - should have no effect on Linux and OSX
         if keyString in frame_list:
-            print('Image found on S3: ' + doubleDashKeyString )
-            if os.path.exists( doubleDashKeyString ):
-                print 'File exists - not downloading!'  # todo MD5 check
-            else:
-                #check if directory exists
-                dirname=os.path.dirname(doubleDashKeyString )
-                if os.path.isdir( dirname )==False:
-                    os.makedirs( dirname ) # todo this has a massive overhead...refactor later
-                object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
-            print( '-------------------------------' )
+            download_frame_dict[ doubleDashKeyString ]=object
+
+    #progressbar
+    progress = 0
+    if progress_bar!=None:
+        progress_bar.setMaximum( len( download_frame_dict ) )
+
+    for doubleDashKeyString,object in download_frame_dict.iteritems():
+        if os.path.exists( doubleDashKeyString ):
+            print('   skipping: ' + doubleDashKeyString ) # todo MD5 check
+        else:
+            print('downloading: ' + doubleDashKeyString )
+            #check if directory exists
+            dirname=os.path.dirname(doubleDashKeyString )
+            if os.path.isdir( dirname )==False:
+                os.makedirs( dirname ) # todo this has a massive overhead...refactor later
+            object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
+        print( '-------------------------------' )
+        progress = progress+1
+        progress_bar.setValue( progress )
     #print '\n'.join( frame_list )
 
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):

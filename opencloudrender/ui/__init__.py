@@ -32,22 +32,31 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) #todo implement this as an .openclouderender json file
         self.ui.repoBucketName.setText( os.environ.get( 'VRAY_REPO_BUCKET' , 'vray-repo' ) )
 
+        #Dropdown
+        self.ui.vrayVersionComboBox.addItem('30001')
+        self.ui.vrayVersionComboBox.addItem('24002')
+
     def syncAssets(self):
+        self.ui.uploadProgressBar.setValue(0)
+
         for scene in self.data_list:
-            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] ) != 0:
-                print "ERROR: some assets could not be uploaded!"
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar ) != 0:
+                print 'ERROR: some assets could not be uploaded!'
 
     def syncAssetsAndSubmit(self):
+        self.ui.uploadProgressBar.setValue(0)
+
         for scene in self.data_list:
-            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] ) != 0:
-                print "ERROR: some assets could not be uploaded!"
-                print "Submitting anyway for now!" #todo do not submit at final release! uncomment next line
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar ) != 0:
+                print 'ERROR: some assets could not be uploaded! SUBMITTING ANYWAY FOR NOW - beta phase!'  #todo do not submit at final release! uncomment next line
                 #raise "Aborting!"
-            sendJob( scene[0] , priority=50 , vray_build="30001" )
+            sendJob( scene[0] , priority=50 , vray_build=self.ui.vrayVersionComboBox.currentText() )
 
     def syncImages(self):
+        self.ui.uploadProgressBar.setValue(0)
+
         for scene in self.data_list:
-            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] )
+            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar )
 
     def dragEnterEvent(self, e):
 
@@ -58,7 +67,7 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def dropEvent(self, e):
         pathList=e.mimeData().urls()
-        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         for url in pathList:
             path=url.toLocalFile()
             if os.path.isfile(path) and path.endswith('.vrscene'):
@@ -66,7 +75,7 @@ class ControlMainWindow(QtGui.QMainWindow):
                 self.table_model.add( vrscene_data  )
                 self.ui.scenesTableView.resizeColumnsToContents()
             #todo implement folder handling here
-        self.emit(QtCore.SIGNAL("layoutChanged()"))
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
 
 class ScenesTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent, mylist, header, *args):
@@ -104,9 +113,9 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
 
     def sort(self, col, order):
         """sort table by given column number col"""
-        self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         self.mylist = sorted(self.mylist,
             key=operator.itemgetter(col))
         if order == QtCore.Qt.DescendingOrder:
             self.mylist.reverse()
-        self.emit(QtCore.SIGNAL("layoutChanged()"))
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
