@@ -2,8 +2,10 @@ from PySide import QtGui,QtCore
 import os
 import ocrSubmit
 import operator
+import opencloudrender
+from opencloudrender.afanasySubmit import sendJob
 from opencloudrender.vraySceneSync import uploadWithDependencies
-from opencloudrender.vray_utils import get_vrscene_data_tuple
+from opencloudrender.vray_utils    import get_vrscene_data_tuple
 
 #todo redirect stdout to a log textfield
 
@@ -23,6 +25,8 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
+        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.syncAssetsAndSubmit )
+        self.ui.syncImagesButton.clicked.connect( self.syncImages )
 
         #Buckets
         self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) #todo implement this as an .openclouderender json file
@@ -30,7 +34,20 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def syncAssets(self):
         for scene in self.data_list:
-            uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] )
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] ) != 0:
+                print "ERROR: some assets could not be uploaded!"
+
+    def syncAssetsAndSubmit(self):
+        for scene in self.data_list:
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] ) != 0:
+                print "ERROR: some assets could not be uploaded!"
+                print "Submitting anyway for now!" #todo do not submit at final release! uncomment next line
+                #raise "Aborting!"
+            sendJob( scene[0] , priority=50 , vray_build="30001" )
+
+    def syncImages(self):
+        for scene in self.data_list:
+            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] )
 
     def dragEnterEvent(self, e):
 

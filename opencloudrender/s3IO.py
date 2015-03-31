@@ -2,7 +2,7 @@ import boto
 import boto.s3
 import hashlib
 
-import os.path
+import os
 import sys
 from path_utils import strip_file_path
 
@@ -14,7 +14,7 @@ PART_SIZE = 6 * 1000 * 1000
 try:
     conn = boto.connect_s3()
 except boto.exception.NoAuthHandlerFound:
-    print "No s3 credentials found - you cannot submit!"
+    print 'No s3 credentials found - you cannot submit!'
 
 exclude_list = ['/docs/' , '/samples/']
 
@@ -27,7 +27,7 @@ def create_bucket( bucket_name ):
         try:
             bucket = conn.get_bucket(bucket_name)
         except boto.exception.S3ResponseError as e:
-            print "Bucket " + bucket_name + "does not exist!"
+            print "Bucket " + bucket_name + ' does not exist!'
             raise e
             #removed auto creation of bucket - todo make confirm dialog for that
             #bucket = conn.create_bucket(bucket_name,
@@ -46,12 +46,38 @@ def get_files_in_directory(source_dir , recursive=False ):
 
 
 def percent_cb(complete, total):
-    sys.stdout.write( "sent {0} / {1}\r".format( complete , total ))
+    sys.stdout.write( "progress {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
+def download_files(data_bucket_name, frame_list ):
+    bucket=create_bucket( data_bucket_name )
+    bucket_list = bucket.list() # todo this will ultimately lead to performance issues >>> make smarter
+    for object in bucket_list:
+        keyString = '/' + str(object.key)
+        #if keyString.endswith('exr'):
+        #    print("Found exr: " + keyString )
+        doubleDashKeyString = os.path.normpath( '/' + keyString ) # this is just a workaround for stupid windoze to write to the network share - should have no effect on Linux and OSX
+        if keyString in frame_list:
+            print('Image found on S3: ' + doubleDashKeyString )
+            if os.path.exists( doubleDashKeyString ):
+                print 'File exists - not downloading!'  # todo MD5 check
+            else:
+                #check if directory exists
+                dirname=os.path.dirname(doubleDashKeyString )
+                if os.path.isdir( dirname )==False:
+                    os.makedirs( dirname ) # todo this has a massive overhead...refactor later
+                object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
+            print( '-------------------------------' )
+    #print '\n'.join( frame_list )
+
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
-    create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
-    upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
+    if os.path.isfile( file_path ):
+        create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
+        upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
+        return 0
+    else:
+        print 'Warning - file not found: ' + file_path
+        return 1
 
 def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' ):
 
@@ -60,7 +86,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
 
     for exclude in exclude_list:
         if exclude in source_dir:
-            print "Directory excluded!"
+            print 'Directory excluded!'
             return
 
     dest_dir = strip_file_path (source_dir , strip_path_prefix )
@@ -72,7 +98,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
     for filename in upload_file_names_list:
         for exclude in exclude_list:
             if exclude in filename:
-                print "Filename excluded!"
+                print 'Filename excluded!'
                 return
 
         sourcepath = os.path.join( source_dir , filename)
@@ -103,7 +129,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
         key.set_metadata('gid', '1001')
         key.set_metadata('mode', '33277') #33204=rw-rw-r--   33277=rwxrwxr-x
         # todo - implement proper duplication of mode!
-        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=50)
+        key.set_contents_from_filename(sourcepath , cb=percent_cb , num_cb=100)
 
 
 
@@ -147,14 +173,3 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
     #else:
         #print 'Folder already exists: ' + folder_name
     return folder_name
-
-
-
-
-
-
-
-
-
-
-

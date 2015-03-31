@@ -1,3 +1,3 @@
 [submodule "cgru"]
 	path = cgru
-	url = git@github.com:ultra-sonic/cgru.git
+	url = https://github.com/ultra-sonic/cgru.git
