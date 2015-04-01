@@ -62,25 +62,30 @@ def download_files(data_bucket_name, frame_list , progress_bar=None ):
         if keyString in frame_list:
             download_frame_dict[ doubleDashKeyString ]=object
 
-    #progressbar
-    progress = 0
-    if progress_bar!=None:
-        progress_bar.setMaximum( len( download_frame_dict ) )
+    if len( download_frame_dict ):
+        #progressbar
+        progress = 0
+        progress_100 = len( download_frame_dict )
+        if progress_bar!=None:
+            progress_bar.setMaximum( progress_100 )
 
-    for doubleDashKeyString,object in download_frame_dict.iteritems():
-        if os.path.exists( doubleDashKeyString ):
-            print('   skipping: ' + doubleDashKeyString ) # todo MD5 check
-        else:
-            print('downloading: ' + doubleDashKeyString )
-            #check if directory exists
-            dirname=os.path.dirname(doubleDashKeyString )
-            if os.path.isdir( dirname )==False:
-                os.makedirs( dirname ) # todo this has a massive overhead...refactor later
-            object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
-        print( '-------------------------------' )
-        progress = progress+1
-        progress_bar.setValue( progress )
-    #print '\n'.join( frame_list )
+        for doubleDashKeyString,object in download_frame_dict.iteritems():
+            if os.path.exists( doubleDashKeyString ):
+                print('   skipping: ' + doubleDashKeyString ) # todo MD5 check
+            else:
+                print('downloading: ' + doubleDashKeyString )
+                #check if directory exists
+                dirname=os.path.dirname(doubleDashKeyString )
+                if os.path.isdir( dirname )==False:
+                    os.makedirs( dirname ) # todo this has a massive overhead...refactor later
+                object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
+            print( '-------------------------------' )
+            progress = progress+1
+            if progress_bar!=None:
+                progress_bar.setValue( progress )
+        #print '\n'.join( frame_list )
+    else:
+        print "No images found on S3!"
 
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
     if os.path.isfile( file_path ):

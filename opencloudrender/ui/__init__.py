@@ -54,9 +54,10 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def syncImages(self):
         self.ui.uploadProgressBar.setValue(0)
-
+        print "Start syncing images..."
         for scene in self.data_list:
             opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar )
+        print "Done syncing images..."
 
     def dragEnterEvent(self, e):
 
@@ -96,11 +97,27 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         else:
             return 0
 
+    """
+    def flags(self, index ):
+        if index.column() == 1 or index.column() == 2:
+            print index.column()
+            flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled
+            return flags
+        else:
+            return QtCore.Qt.ItemIsEnabled
+
+    def setData(self, index, value):
+        self.arraydata[index.row()][index.column()] = value
+        return True
+    """
+
     def data(self, index, role):
         if not index.isValid():
             return None
         elif role != QtCore.Qt.DisplayRole:
             return None
+        elif role == QtCore.Qt.TextAlignmentRole:
+            return QtCore.Qt.AlignCenter
         if index.row() == 0:
             return os.path.basename( self.mylist[index.row()][index.column()] )
         else:

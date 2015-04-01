@@ -20,12 +20,22 @@ def get_vray_settings( vrscene_path ):
                     vray_settings_dict[ key ] = value.lstrip('"').rstrip('"')
                 if line.find('}') > -1:
                     return vray_settings_dict
-    raise "No Vray Settings found"
+    raise KeyError("No Vray Settings found")
 
 def get_vrscene_data_tuple( vrscene_path ):
     vray_settings = get_vray_settings( vrscene_path )
+    default_camera = get_default_camera( vrscene_path )
     #return ( os.path.basename( vrscene_path ) , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' , vrscene_path )
-    return ( vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' )
+    return ( vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera )
+
+
+def get_default_camera( vrscene_path ):
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
+            if line.startswith('CameraDefault '):
+                default_camera = line.split(' ')[1]
+                return default_camera
+    raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
 
 
 def get_output_image_path( vrscene_path ):

@@ -1,5 +1,6 @@
 import s3IO , re
 def uploadWithDependencies( bucket_name , vrscene_path , progress_bar=None ):
+    print "Start syncing assets..."
     ret = 0
     progress = 0
     dependencies = getDependencies( vrscene_path )
@@ -16,6 +17,7 @@ def uploadWithDependencies( bucket_name , vrscene_path , progress_bar=None ):
     if s3IO.upload_file( bucket_name , vrscene_path ) != 0:
         ret=1
     progress_bar.setValue( progress_100 )
+    print "Done syncing assets..."
     return ret
 
 def getDependencies( vrscene_path ):

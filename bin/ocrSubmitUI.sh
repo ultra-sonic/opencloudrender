@@ -19,4 +19,9 @@ echo PYTHONPATH: $PYTHONPATH
 #afanasy done
 
 $DIR/ocrSubmitUI.py
-sleep 10
+echo "sleeping 3..."
+sleep 1
+echo "sleeping 2..."
+sleep 1
+echo "sleeping 1..."
+sleep 1
