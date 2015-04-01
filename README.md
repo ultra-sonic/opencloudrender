@@ -53,6 +53,9 @@ cd opencloudrender
 git submodule init
 git submodule update
 ```
+> **Note:**
+> I originally intended to install opencloudrender using distutils, but due to the dependency on cgru this seems impossible.
+> If anybody comes up with a clever way let me know!
 
 CONFIGURE:
 ==========
