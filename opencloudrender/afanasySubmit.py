@@ -1,7 +1,7 @@
 # Import afanasy python module ( must be in PYTHONPATH).
 import os , af
 from path_utils import validate_file_path
-from vray_utils import get_vray_settings, get_output_image_path
+from vray_utils import get_vray_settings
 
 
 def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):

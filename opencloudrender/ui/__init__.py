@@ -37,7 +37,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.vrayVersionComboBox.addItem('24002')
 
     def syncAssets(self):
-        self.ui.uploadProgressBar.setValue(0)
+        self.ui.uploadProgressBar.setValue(0) # todo - add cancel button
 
         for scene in self.data_list:
             if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar ) != 0:
