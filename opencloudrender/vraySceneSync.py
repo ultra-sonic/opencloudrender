@@ -1,8 +1,22 @@
 import s3IO , re
-def uploadWithDependencies( bucket_name , vrscene_path ):
-    for asset in getDependencies( vrscene_path ):
-        s3IO.upload_file( bucket_name , asset )
-    s3IO.upload_file( bucket_name , vrscene_path )
+def uploadWithDependencies( bucket_name , vrscene_path , progress_bar=None ):
+    ret = 0
+    progress = 0
+    dependencies = getDependencies( vrscene_path )
+    progress_100 = len( dependencies )+1
+    if progress_bar!=None:
+            progress_bar.setMaximum( progress_100 )
+    for asset in dependencies:
+        if s3IO.upload_file( bucket_name , asset ) != 0:
+            ret=1
+            progress=progress+1
+            if progress_bar!=None:
+                progress_bar.setValue( progress )
+
+    if s3IO.upload_file( bucket_name , vrscene_path ) != 0:
+        ret=1
+    progress_bar.setValue( progress_100 )
+    return ret
 
 def getDependencies( vrscene_path ):
     asset_patterns=[' file=".*"']
