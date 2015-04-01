@@ -1,12 +1,12 @@
 PREREQUISITES:
 ==============
-0. Python - Windows only:
+Python - on Windows only:
 ----------------
 
 Please install python 2.7.9 including pip
 
-1. PySide
----------
+PySide
+------
 
 Linux - yum based distros:
 
@@ -20,8 +20,8 @@ sudo yum install python-pyside
 
 OSX:
 
-```
 install macports and do:
+```
 sudo port install py-pyside
 ```
 Windows:
@@ -29,8 +29,8 @@ Windows:
 pip install -U PySide
 ```
 
-2. Boto
--------
+Boto
+----
 
 Windows (might also work on Linux/MacOs):
 ```
@@ -73,6 +73,8 @@ LAUNCH:
 just launch 
 ```
 bin/ocrSubmitUI.sh
-or 
-bin/ocrSubmitUI.bat)
+```
+or
+```
+bin/ocrSubmitUI.bat
 ```
