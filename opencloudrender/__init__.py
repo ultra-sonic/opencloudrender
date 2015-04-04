@@ -1,4 +1,4 @@
-import os , sys , afanasySubmit , s3IO , vraySceneSync
+import os , sys , afanasySubmit , s3IO , sceneSync
 from opencloudrender.vray_utils import get_vray_settings
 from path_utils import validate_file_path, add_padding_to_image_path
 

@@ -4,7 +4,7 @@ import ocrSubmit
 import operator
 import opencloudrender
 from opencloudrender.afanasySubmit import sendJob
-from opencloudrender.vraySceneSync import uploadWithDependencies
+from opencloudrender.sceneSync import SyncAssetsThread
 from opencloudrender.vray_utils    import get_vrscene_data_tuple
 
 #todo redirect stdout to a log textfield
@@ -13,10 +13,10 @@ class ControlMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(ControlMainWindow, self).__init__(parent)
 
-        self.header = [ 'scenepath', 'start', 'end', 'camera' ]
+        self.header = [ 'scenepath', 'start', 'end', 'camera' , 'submit' , 'synced' ]
         self.data_list = []
         self.table_model = ScenesTableModel(self, self.data_list, self.header) #maybe skip passing of data_list and header and use parent.data_list in ScenesTableModel
-
+        self.data_bucket_name = "fbcloudrender-testdata"
         #UI
 
         self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
@@ -31,7 +31,7 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
-        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.syncAssetsAndSubmit ) # todo disable before sync is not pressed - maybe force-enable it through double-click
+        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.submitScenes ) # todo disable before sync is not pressed - maybe force-enable it through double-click
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
 
         #Buckets
@@ -41,6 +41,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         #Dropdown
         self.ui.vrayVersionComboBox.addItem('30001')
         self.ui.vrayVersionComboBox.addItem('24002')
+
+        #Labels
+        self.ui.progressMessagelabel.setText( '' )
 
 
 
@@ -53,15 +56,16 @@ class ControlMainWindow(QtGui.QMainWindow):
                 print 'ERROR: some assets could not be uploaded!'
     """
     def syncAssets(self):
-        self.ui.syncAssetsButton.setEnabled(False)
-        self.ui.syncAssetsAndSubmitButton.setEnabled(False)
-        self.ui.syncImagesButton.setEnabled(False)
-        syncAssetsThread = SyncAssetsThread( self , self.data_list , self.ui.dataBucketName.text() )
+        #syncAssetsThread = SyncAssetsThread( self , self.data_list , self.ui.dataBucketName.text() )
+        syncAssetsThread = SyncAssetsThread( parent=self ) # call with self as parent
         syncAssetsThread.update_progress_signal.connect( self.setProgress )
-        syncAssetsThread.progress_done_signal.connect( self.enableButtons )
+        syncAssetsThread.started.connect( self.disableAllButtons )
+        syncAssetsThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
+        syncAssetsThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( syncAssetsThread.cancel )
         syncAssetsThread.start()
 
-    def syncAssetsAndSubmit(self):
+    def submitScenes(self):
         self.ui.progressBar.setValue(0)
 
         for scene in self.data_list:
@@ -102,46 +106,21 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.progressMessagelabel.setText( progress_message )
         print( str( progress_current ) + ' / ' + str(progress_max) + ' : ' + progress_message )
 
-    def enableButtons(self):
+    def enableAllButtons(self):
         self.ui.syncAssetsButton.setEnabled(True)
         self.ui.syncAssetsAndSubmitButton.setEnabled(True)
         self.ui.syncImagesButton.setEnabled(True)
+        self.ui.cancelButton.setEnabled(False)
 
-    def disaableButtons(self):
+    def disableAllButtons(self):
         self.ui.syncAssetsButton.setEnabled(False)
         self.ui.syncAssetsAndSubmitButton.setEnabled(False)
         self.ui.syncImagesButton.setEnabled(False)
+        self.ui.cancelButton.setEnabled(True)
 
 
-class SyncAssetsThread(QtCore.QThread):
-    # http://stackoverflow.com/questions/20657753/python-pyside-and-progress-bar-threading <<< THIS IS IT!
-    # http://stackoverflow.com/questions/12138954/pyside-and-qprogressbar-update-in-a-different-thread
 
 
-    update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
-    progress_done_signal = QtCore.Signal()
-
-    def __init__(self, parent=None, data_list=None , data_bucket_name=None ):
-        super(SyncAssetsThread,self).__init__(parent)
-        self.exiting = False
-        self.parent = parent
-        self.data_list = data_list
-        self.data_bucket_name = data_bucket_name
-
-    def run( self ):
-        self.update_progress_signal.emit( 'checking...' , 0 , 100 )
-
-        for scene in self.parent.data_list:
-            if uploadWithDependencies( self.data_bucket_name , scene[0] , update_progress_signal=self.update_progress_signal ) != 0:
-                print 'ERROR: some assets could not be uploaded!'
-        self.progress_done_signal.emit()
-
-    """@QtCore.Slot(str)
-    def cancel(self, text):
-        self.solution = text
-        # this definitely gets executed upon pressing return
-        self.wait_for_input.exit()
-    """
 class ScenesTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent, mylist, header, *args):
         QtCore.QAbstractTableModel.__init__(self, parent, *args)

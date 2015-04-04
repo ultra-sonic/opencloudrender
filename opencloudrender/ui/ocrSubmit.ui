@@ -30,7 +30,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="syncAssetsAndSubmitButton">
+   <widget class="QPushButton" name="submitScenesButton">
     <property name="geometry">
      <rect>
       <x>1210</x>
@@ -40,7 +40,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>sync assets + submit</string>
+     <string>submit scenes</string>
     </property>
    </widget>
    <widget class="QPushButton" name="syncAssetsButton">

@@ -1,19 +1,17 @@
 from PySide import QtCore
-import s3IO , re
+from opencloudrender.vray_utils import getVrsceneDependencies
+import s3IO
 
 class SyncAssetsThread(QtCore.QThread):
-    # http://stackoverflow.com/questions/20657753/python-pyside-and-progress-bar-threading <<< THIS IS IT!
-    # http://stackoverflow.com/questions/12138954/pyside-and-qprogressbar-update-in-a-different-thread
-
+    # thx to those guys i mad threading work ;)
+    # http://stackoverflow.com/questions/20657753/python-pyside-and-progress-bar-threading
+    # http://www.matteomattei.com/pyside-signals-and-slots-with-qthread-example/
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
 
-
-    #def __init__(self, parent=None, data_list=None , data_bucket_name=None ):
     def __init__(self, parent=None ):
         super(SyncAssetsThread,self).__init__(parent)
         self.exiting = False
-        #self.parent = parent
         self.data_list = parent.data_list
         self.data_bucket_name = parent.data_bucket_name
 
@@ -67,29 +65,7 @@ def uploadWithDependencies( bucket_name , vrscene_path , update_progress_signal=
     pass
 """
 
-def getVrsceneDependencies( vrscene_path ):
-    asset_patterns=[' file=".*"']
-    included_vrscenes = []
-    assets = []
-    with open( vrscene_path , 'r' ) as vrscene:
-        for line in vrscene:
-            if line.startswith('#include') and line.find('.vrscene'):
-                included_vrscenes.append( line.split('"')[1] )
-            for pattern in asset_patterns:
-                regex = re.compile( pattern )
-                match = regex.search( line )
-                if match != None:
-                    file_path = line[ match.start() + pattern.find('"') + 1 : match.end()-1  ]
-                    if file_path != '':
-                        assets.append( file_path )
 
-    #recurse into included vrscenes
-    for included_scene in included_vrscenes:
-        #print "recursing into: " + included_scene
-        assets.extend( getVrsceneDependencies( included_scene ) )
-
-    assets.extend( included_vrscenes )
-    return assets
 
 def getAssDependencies( ass_path ): # todo implement ARNOLD .ass parsing
     return None

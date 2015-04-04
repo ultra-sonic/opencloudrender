@@ -11,7 +11,7 @@ vrscene_path =  './testData/forestInstancer_v039_fbcloudrender_left_stereoCamera
 
 def test_s3_fileio():
     #vrayRepoSync.push( repo_bucket_name )
-    ocr.vraySceneSync.uploadWithDependencies( data_bucket_name , vrscene_path )
+    ocr.sceneSync.uploadWithDependencies( data_bucket_name , vrscene_path )
 
 def test_afanasySubmit():
     ocr.submit_vrscene( vrscene_path )
@@ -39,7 +39,7 @@ def test_upload_image_s3():
     ocr.upload_image_s3( vrscene_path  , exr , data_local , 3 , 3 , 1 )
 
 def test_getDependencies():
-    assets = ocr.vraySceneSync.getDependencies( vrscene_path )
+    assets = ocr.sceneSync.getVrsceneDependencies( vrscene_path )
     print assets
 
 def test_UI():

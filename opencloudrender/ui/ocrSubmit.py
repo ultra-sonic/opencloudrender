@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Sat Apr  4 21:21:06 2015
+# Created: Sat Apr  4 23:12:32 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,9 +20,9 @@ class Ui_OpenCloudRenderSubmit(object):
         self.scenesTableView.setGeometry(QtCore.QRect(40, 20, 1161, 160))
         self.scenesTableView.setAcceptDrops(True)
         self.scenesTableView.setObjectName("scenesTableView")
-        self.syncAssetsAndSubmitButton = QtGui.QPushButton(self.centralwidget)
-        self.syncAssetsAndSubmitButton.setGeometry(QtCore.QRect(1210, 110, 170, 30))
-        self.syncAssetsAndSubmitButton.setObjectName("syncAssetsAndSubmitButton")
+        self.submitScenesButton = QtGui.QPushButton(self.centralwidget)
+        self.submitScenesButton.setGeometry(QtCore.QRect(1210, 110, 170, 30))
+        self.submitScenesButton.setObjectName("submitScenesButton")
         self.syncAssetsButton = QtGui.QPushButton(self.centralwidget)
         self.syncAssetsButton.setGeometry(QtCore.QRect(1210, 70, 170, 30))
         self.syncAssetsButton.setObjectName("syncAssetsButton")
@@ -79,7 +79,7 @@ class Ui_OpenCloudRenderSubmit(object):
 
     def retranslateUi(self, OpenCloudRenderSubmit):
         OpenCloudRenderSubmit.setWindowTitle(QtGui.QApplication.translate("OpenCloudRenderSubmit", "OpenCloudRender", None, QtGui.QApplication.UnicodeUTF8))
-        self.syncAssetsAndSubmitButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync assets + submit", None, QtGui.QApplication.UnicodeUTF8))
+        self.submitScenesButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "submit scenes", None, QtGui.QApplication.UnicodeUTF8))
         self.syncAssetsButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync assets", None, QtGui.QApplication.UnicodeUTF8))
         self.syncImagesButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "sync images", None, QtGui.QApplication.UnicodeUTF8))
         self.addScenesButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "add .vrscene/.ass files", None, QtGui.QApplication.UnicodeUTF8))
