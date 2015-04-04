@@ -17,15 +17,21 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.data_list = []
         self.table_model = ScenesTableModel(self, self.data_list, self.header) #maybe skip passing of data_list and header and use parent.data_list in ScenesTableModel
 
+        #UI
+
         self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
         self.ui.setupUi(self)
 
         #Table
         self.ui.scenesTableView.setModel( self.table_model )
 
+        #Threads
+        #self.syncAssetsThread = SyncAssetsThread( )
+        #self.syncAssets.update_progress_signal.connect(self.setProgress)
+
         #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
-        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.syncAssetsAndSubmit )
+        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.syncAssetsAndSubmit ) # todo disable before sync is not pressed - maybe force-enable it through double-click
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
 
         #Buckets
@@ -36,27 +42,39 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.vrayVersionComboBox.addItem('30001')
         self.ui.vrayVersionComboBox.addItem('24002')
 
-    def syncAssets(self):
-        self.ui.uploadProgressBar.setValue(0) # todo - add cancel button
+
+
+
+    """def syncAssets(self):
+        self.ui.progressBar.setValue(0) # todo - add cancel button
 
         for scene in self.data_list:
-            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar ) != 0:
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar ) != 0:
                 print 'ERROR: some assets could not be uploaded!'
+    """
+    def syncAssets(self):
+        self.ui.syncAssetsButton.setEnabled(False)
+        self.ui.syncAssetsAndSubmitButton.setEnabled(False)
+        self.ui.syncImagesButton.setEnabled(False)
+        syncAssetsThread = SyncAssetsThread( self , self.data_list , self.ui.dataBucketName.text() )
+        syncAssetsThread.update_progress_signal.connect( self.setProgress )
+        syncAssetsThread.progress_done_signal.connect( self.enableButtons )
+        syncAssetsThread.start()
 
     def syncAssetsAndSubmit(self):
-        self.ui.uploadProgressBar.setValue(0)
+        self.ui.progressBar.setValue(0)
 
         for scene in self.data_list:
-            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar ) != 0:
+            if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar ) != 0:
                 print 'ERROR: some assets could not be uploaded! SUBMITTING ANYWAY FOR NOW - beta phase!'  #todo do not submit at final release! uncomment next line
                 #raise "Aborting!"
             sendJob( scene[0] , priority=50 , vray_build=self.ui.vrayVersionComboBox.currentText() )
 
     def syncImages(self):
-        self.ui.uploadProgressBar.setValue(0)
+        self.ui.progressBar.setValue(0)
         print "Start syncing images..."
         for scene in self.data_list:
-            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.uploadProgressBar )
+            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar )
         print "Done syncing images..."
 
     def dragEnterEvent(self, e):
@@ -78,6 +96,52 @@ class ControlMainWindow(QtGui.QMainWindow):
             #todo implement folder handling here
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
+    def setProgress(self, progress_message , progress_current , progress_max ):
+        self.ui.progressBar.setMaximum( progress_max )
+        self.ui.progressBar.setValue( progress_current )
+        self.ui.progressMessagelabel.setText( progress_message )
+        print( str( progress_current ) + ' / ' + str(progress_max) + ' : ' + progress_message )
+
+    def enableButtons(self):
+        self.ui.syncAssetsButton.setEnabled(True)
+        self.ui.syncAssetsAndSubmitButton.setEnabled(True)
+        self.ui.syncImagesButton.setEnabled(True)
+
+    def disaableButtons(self):
+        self.ui.syncAssetsButton.setEnabled(False)
+        self.ui.syncAssetsAndSubmitButton.setEnabled(False)
+        self.ui.syncImagesButton.setEnabled(False)
+
+
+class SyncAssetsThread(QtCore.QThread):
+    # http://stackoverflow.com/questions/20657753/python-pyside-and-progress-bar-threading <<< THIS IS IT!
+    # http://stackoverflow.com/questions/12138954/pyside-and-qprogressbar-update-in-a-different-thread
+
+
+    update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
+    progress_done_signal = QtCore.Signal()
+
+    def __init__(self, parent=None, data_list=None , data_bucket_name=None ):
+        super(SyncAssetsThread,self).__init__(parent)
+        self.exiting = False
+        self.parent = parent
+        self.data_list = data_list
+        self.data_bucket_name = data_bucket_name
+
+    def run( self ):
+        self.update_progress_signal.emit( 'checking...' , 0 , 100 )
+
+        for scene in self.parent.data_list:
+            if uploadWithDependencies( self.data_bucket_name , scene[0] , update_progress_signal=self.update_progress_signal ) != 0:
+                print 'ERROR: some assets could not be uploaded!'
+        self.progress_done_signal.emit()
+
+    """@QtCore.Slot(str)
+    def cancel(self, text):
+        self.solution = text
+        # this definitely gets executed upon pressing return
+        self.wait_for_input.exit()
+    """
 class ScenesTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent, mylist, header, *args):
         QtCore.QAbstractTableModel.__init__(self, parent, *args)
@@ -97,15 +161,14 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         else:
             return 0
 
-    """
+
     def flags(self, index ):
         if index.column() == 1 or index.column() == 2:
-            print index.column()
             flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled
             return flags
         else:
             return QtCore.Qt.ItemIsEnabled
-
+    """
     def setData(self, index, value):
         self.arraydata[index.row()][index.column()] = value
         return True
@@ -118,7 +181,7 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
             return None
         elif role == QtCore.Qt.TextAlignmentRole:
             return QtCore.Qt.AlignCenter
-        if index.row() == 0:
+        if index.column() == 0:
             return os.path.basename( self.mylist[index.row()][index.column()] )
         else:
             return self.mylist[index.row()][index.column()]

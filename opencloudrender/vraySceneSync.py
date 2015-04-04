@@ -1,23 +1,22 @@
+from PySide import QtCore
 import s3IO , re
-def uploadWithDependencies( bucket_name , vrscene_path , progress_bar=None ):
+def uploadWithDependencies( bucket_name , vrscene_path , update_progress_signal=QtCore.Signal() ):
     print "Start syncing assets..."
     ret = 0
-    progress = 0
+    progress_current = 0
     dependencies = getDependencies( vrscene_path )
     progress_100 = len( dependencies )+1
-    if progress_bar!=None:
-            progress_bar.setMaximum( progress_100 )
+
     for asset in dependencies:
         if s3IO.upload_file( bucket_name , asset ) != 0:
             ret=1
-            progress=progress+1
-            if progress_bar!=None:
-                progress_bar.setValue( progress )
+        progress_current=progress_current+1
+        update_progress_signal.emit( asset , progress_current , progress_100 )
 
+    update_progress_signal.emit( vrscene_path , 99 , 100 )
     if s3IO.upload_file( bucket_name , vrscene_path ) != 0:
         ret=1
-    progress_bar.setValue( progress_100 )
-    print "Done syncing assets..."
+    update_progress_signal.emit( "Done syncing assets..." , 100 , 100 )
     return ret
 
 def getDependencies( vrscene_path ):
