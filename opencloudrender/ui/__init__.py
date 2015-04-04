@@ -4,7 +4,7 @@ import ocrSubmit
 import operator
 import opencloudrender
 from opencloudrender.afanasySubmit import sendJob
-from opencloudrender.sceneSync import SyncAssetsThread
+from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
 from opencloudrender.vray_utils    import get_vrscene_data_tuple
 
 #todo redirect stdout to a log textfield
@@ -31,7 +31,7 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
-        self.ui.syncAssetsAndSubmitButton.clicked.connect( self.submitScenes ) # todo disable before sync is not pressed - maybe force-enable it through double-click
+        self.ui.submitScenesButton.clicked.connect( self.submitScenes ) # todo disable before sync is not pressed - maybe force-enable it through double-click
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
 
         #Buckets
@@ -75,11 +75,13 @@ class ControlMainWindow(QtGui.QMainWindow):
             sendJob( scene[0] , priority=50 , vray_build=self.ui.vrayVersionComboBox.currentText() )
 
     def syncImages(self):
-        self.ui.progressBar.setValue(0)
-        print "Start syncing images..."
-        for scene in self.data_list:
-            opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar )
-        print "Done syncing images..."
+        syncImagesThread = SyncImagesThread( parent=self ) # call with self as parent
+        syncImagesThread.update_progress_signal.connect( self.setProgress )
+        syncImagesThread.started.connect( self.disableAllButtons )
+        syncImagesThread.terminated.connect( self.enableAllButtons )
+        syncImagesThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( syncImagesThread.cancel )
+        syncImagesThread.start()
 
     def dragEnterEvent(self, e):
 
@@ -108,13 +110,13 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def enableAllButtons(self):
         self.ui.syncAssetsButton.setEnabled(True)
-        self.ui.syncAssetsAndSubmitButton.setEnabled(True)
+        self.ui.submitScenesButton.setEnabled(True)
         self.ui.syncImagesButton.setEnabled(True)
         self.ui.cancelButton.setEnabled(False)
 
     def disableAllButtons(self):
         self.ui.syncAssetsButton.setEnabled(False)
-        self.ui.syncAssetsAndSubmitButton.setEnabled(False)
+        self.ui.submitScenesButton.setEnabled(False)
         self.ui.syncImagesButton.setEnabled(False)
         self.ui.cancelButton.setEnabled(True)
 

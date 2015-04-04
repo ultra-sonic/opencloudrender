@@ -1,3 +1,4 @@
+from PySide import QtCore
 import boto
 import boto.s3
 import hashlib
@@ -49,7 +50,7 @@ def percent_cb(complete, total):
     sys.stdout.write( "progress {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
-def download_files(data_bucket_name, frame_list , progress_bar=None ):
+def download_files(data_bucket_name, frame_list , update_progress_signal=QtCore.Signal ):
     bucket=create_bucket( data_bucket_name ) # todo implement a get_bucket function
     dir_name=os.path.dirname( frame_list[0] ).lstrip('/')
     bucket_list = bucket.list( prefix=dir_name )
@@ -66,8 +67,8 @@ def download_files(data_bucket_name, frame_list , progress_bar=None ):
         #progressbar
         progress = 0
         progress_100 = len( download_frame_dict )
-        if progress_bar!=None:
-            progress_bar.setMaximum( progress_100 )
+
+        update_progress_signal.emit( 'Starting download' , progress , progress_100 )
 
         for doubleDashKeyString,object in download_frame_dict.iteritems():
             if os.path.exists( doubleDashKeyString ):
@@ -81,9 +82,7 @@ def download_files(data_bucket_name, frame_list , progress_bar=None ):
                 object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
             print( '-------------------------------' )
             progress = progress+1
-            if progress_bar!=None:
-                progress_bar.setValue( progress )
-        #print '\n'.join( frame_list )
+            update_progress_signal.emit( os.path.basename( doubleDashKeyString ) , progress , progress_100 )
     else:
         print "No images found on S3!"
 
