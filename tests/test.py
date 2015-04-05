@@ -3,7 +3,7 @@ import os
 import time
 import opencloudrender as ocr
 from opencloudrender.sceneSync import SyncAssetsThread
-from opencloudrender.vrayUtils import get_vrscene_data_tuple
+from opencloudrender.vrayUtils import get_vrscene_data
 from opencloudrender.renderJobSubmission import sendToAfanasy
 
 repo_bucket_name   = os.environ.get( 'VRAY_REPO_BUCKET' , 'env var VRAY_REPO_BUCKET not set!' )
@@ -18,7 +18,7 @@ class TestDummyObject( QtCore.QObject ):
         self.data_list = []
         self.data_bucket_name = None
     def uploadWithDependencies(self , data_bucket_name , vrscene_path ):
-        self.data_list.append( get_vrscene_data_tuple( vrscene_path ) )
+        self.data_list.append( get_vrscene_data( vrscene_path ) )
         self.data_bucket_name =  data_bucket_name
         syncAssetsThread = SyncAssetsThread( parent=self ) # call with self as parent
         syncAssetsThread.update_progress_signal.connect( self.setProgress )

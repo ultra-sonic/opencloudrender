@@ -22,11 +22,11 @@ def get_vray_settings( vrscene_path ):
                     return vray_settings_dict
     raise KeyError("No Vray Settings found")
 
-def get_vrscene_data_tuple( vrscene_path ):
+def get_vrscene_data( vrscene_path ):
     vray_settings = get_vray_settings( vrscene_path )
     default_camera = get_default_camera( vrscene_path )
     #return ( os.path.basename( vrscene_path ) , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' , vrscene_path )
-    return ( vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera , True , False )
+    return [ vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera , True , False ]
 
 
 def get_default_camera( vrscene_path ):

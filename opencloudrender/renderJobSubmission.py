@@ -1,8 +1,8 @@
 # Import afanasy python module ( must be in PYTHONPATH).
+from PySide import QtCore
 import os , af
 from pathUtils import validate_file_path
 from vrayUtils import get_vray_settings
-
 
 def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
     print "Start sending job to server..."
@@ -47,7 +47,40 @@ def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_
     print "Result: " + str(result)
     if result[0]:
         print "Finished sending job to server..."
-        return 0
+        return True
     else:
         print "ERROR: Failed sending job to server..."
-        return 1
+        return False
+
+class SubmitScenesThread(QtCore.QThread):
+    # thx to those guys i mad threading work ;)
+    # http://stackoverflow.com/questions/20657753/python-pyside-and-progress-bar-threading
+    # http://www.matteomattei.com/pyside-signals-and-slots-with-qthread-example/
+
+    update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
+
+    def __init__(self, parent=None ):
+        super(SubmitScenesThread,self).__init__(parent)
+        self.exiting = False
+        self.data_list = parent.data_list
+        self.renderer_version = parent.ui.vrayVersionComboBox.currentText()
+
+    def run(self):
+        prog=0
+        prog_max=len(self.data_list)
+        for scene in self.data_list:
+            if self.exiting==False:
+                if scene[4]==True and scene[5]==True: #check if submit and sync is True
+                    self.update_progress_signal.emit( 'sending job: ' + scene[0] , prog , prog_max )
+                    if sendToAfanasy( scene[0] , priority=50 , vray_build=self.renderer_version )==False:
+                        self.update_progress_signal.emit( 'error sending: ' + scene[0] + ' - aborting', prog , prog_max )
+                        return
+            else:
+                self.update_progress_signal.emit( 'canceled sending of: ' + scene[0] , prog , prog_max )
+            prog=prog+1
+        self.update_progress_signal.emit( 'submission of ' + str(prog_max) + ' jobs done! ' , prog , prog_max )
+
+
+    @QtCore.Slot()
+    def cancel(self):
+        self.exiting = True
