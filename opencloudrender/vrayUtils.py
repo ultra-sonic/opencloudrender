@@ -1,5 +1,5 @@
 import os , re
-from path_utils import validate_file_path
+from pathUtils import validate_file_path
 
 
 def get_vray_settings( vrscene_path ):

@@ -3,9 +3,9 @@ import os
 import ocrSubmit
 import operator
 import opencloudrender
-from opencloudrender.afanasySubmit import sendJob
+from opencloudrender.renderJobSubmission import sendToAfanasy
 from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
-from opencloudrender.vray_utils    import get_vrscene_data_tuple
+from opencloudrender.vrayUtils    import get_vrscene_data_tuple
 
 #todo redirect stdout to a log textfield
 
@@ -72,7 +72,7 @@ class ControlMainWindow(QtGui.QMainWindow):
             if uploadWithDependencies( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar ) != 0:
                 print 'ERROR: some assets could not be uploaded! SUBMITTING ANYWAY FOR NOW - beta phase!'  #todo do not submit at final release! uncomment next line
                 #raise "Aborting!"
-            sendJob( scene[0] , priority=50 , vray_build=self.ui.vrayVersionComboBox.currentText() )
+            sendToAfanasy( scene[0] , priority=50 , vray_build=self.ui.vrayVersionComboBox.currentText() )
 
     def syncImages(self):
         syncImagesThread = SyncImagesThread( parent=self ) # call with self as parent

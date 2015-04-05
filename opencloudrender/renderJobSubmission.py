@@ -1,10 +1,10 @@
 # Import afanasy python module ( must be in PYTHONPATH).
 import os , af
-from path_utils import validate_file_path
-from vray_utils import get_vray_settings
+from pathUtils import validate_file_path
+from vrayUtils import get_vray_settings
 
 
-def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
+def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
     print "Start sending job to server..."
     # UI Options -- TODO implement!!
 
@@ -43,7 +43,11 @@ def sendJob( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_
     block.setSequential( 10 )
 
     # Send job to Afanasy server.
-    result=job.send()
+    result=job.send( verbose=True )
     print "Result: " + str(result)
-    print "Finished sending job to server..."
-    return result
+    if result[0]:
+        print "Finished sending job to server..."
+        return 0
+    else:
+        print "ERROR: Failed sending job to server..."
+        return 1
