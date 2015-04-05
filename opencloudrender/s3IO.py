@@ -1,10 +1,11 @@
+from PySide import QtCore
 import boto
 import boto.s3
 import hashlib
 
 import os
 import sys
-from path_utils import strip_file_path
+from pathUtils import strip_file_path
 
 # max size in bytes before uploading in parts. between 1 and 5 GB recommended
 MAX_SIZE = 20 * 1000 * 1000
@@ -16,26 +17,37 @@ try:
 except boto.exception.NoAuthHandlerFound:
     print 'No s3 credentials found - you cannot submit!'
 
-exclude_list = ['/docs/' , '/samples/']
-
 existing_buckets=dict()
-# todo - implement proper exclude list a la rsync
+
 
 def create_bucket( bucket_name ):
-    # todo - debug if this is really working as expected
+    try:
+        bucket = conn.create_bucket(bucket_name,
+                                location=boto.s3.connection.Location.EU)
+        return bucket
+    except boto.exception.S3ResponseError as e:
+        raise e('Seems you habe no permission to create a bucket!')
+
+
+def get_bucket( bucket_name , auto_create=False , parent=None ):
     if bucket_name not in existing_buckets.keys():
         try:
             bucket = conn.get_bucket(bucket_name)
         except boto.exception.S3ResponseError as e:
-            print "Bucket " + bucket_name + ' does not exist!'
-            raise e
-            #removed auto creation of bucket - todo make confirm dialog for that
-            #bucket = conn.create_bucket(bucket_name,
-            #                            location=boto.s3.connection.Location.EU)
+            print 'Bucket "' + bucket_name + '" does not exist or you have no permission!'
+            if parent!=None:
+                # todo present Qt confirmdialog and override auto_create based in decision
+                auto_create=True
+            if auto_create:
+                print "trying to create it now!"
+                bucket = create_bucket( bucket_name )
+            else:
+                raise e('User decided not to create the bucket. Raising exception now!')
         existing_buckets[ bucket_name ] = bucket
         return bucket
     else:
         return existing_buckets[ bucket_name ]
+
 
 
 def get_files_in_directory(source_dir , recursive=False ):
@@ -49,8 +61,8 @@ def percent_cb(complete, total):
     sys.stdout.write( "progress {0} / {1}\r".format( complete , total ))
     sys.stdout.flush()
 
-def download_files(data_bucket_name, frame_list , progress_bar=None ):
-    bucket=create_bucket( data_bucket_name ) # todo implement a get_bucket function
+def download_files(data_bucket_name, frame_list , update_progress_signal=QtCore.Signal ):
+    bucket=get_bucket( data_bucket_name ) # todo implement a get_bucket function
     dir_name=os.path.dirname( frame_list[0] ).lstrip('/')
     bucket_list = bucket.list( prefix=dir_name )
     download_frame_dict = {}
@@ -66,8 +78,8 @@ def download_files(data_bucket_name, frame_list , progress_bar=None ):
         #progressbar
         progress = 0
         progress_100 = len( download_frame_dict )
-        if progress_bar!=None:
-            progress_bar.setMaximum( progress_100 )
+
+        update_progress_signal.emit( 'Starting download...' , progress , progress_100 )
 
         for doubleDashKeyString,object in download_frame_dict.iteritems():
             if os.path.exists( doubleDashKeyString ):
@@ -81,11 +93,9 @@ def download_files(data_bucket_name, frame_list , progress_bar=None ):
                 object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
             print( '-------------------------------' )
             progress = progress+1
-            if progress_bar!=None:
-                progress_bar.setValue( progress )
-        #print '\n'.join( frame_list )
+            update_progress_signal.emit( os.path.basename( doubleDashKeyString ) , progress , progress_100 )
     else:
-        print "No images found on S3!"
+        update_progress_signal.emit( 'No images found on S3!' , 0 , 0 )
 
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
     if os.path.isfile( file_path ):
@@ -96,10 +106,10 @@ def upload_file( bucket_name , file_path , strip_path_prefix='' ):
         print 'Warning - file not found: ' + file_path
         return 1
 
-def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' ):
+def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' , exclude_list=[] ):
 
 
-    bucket = create_bucket( bucket_name )
+    bucket = get_bucket( bucket_name )
 
     for exclude in exclude_list:
         if exclude in source_dir:
@@ -151,7 +161,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
 
 
 def test_permissions( bucket_name , dest_path ):
-    bucket = create_bucket( bucket_name )
+    bucket = get_bucket( bucket_name )
     key = bucket.get_key( dest_path )
     #acl = key.get_acl()
     #print acl
@@ -169,7 +179,7 @@ def create_folders( bucket_name , source_dir , dir_names  , strip_source_prefix 
 
 def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid = 1001 , gid = 1001 , strip_path_prefix='' ):
 
-    bucket = create_bucket( bucket_name )
+    bucket = get_bucket( bucket_name )
 
     #safety first - make sure we have slash at the end of our foldername
     folder_name = strip_file_path( folder_name , strip_path_prefix ).rstrip('/') + '/'

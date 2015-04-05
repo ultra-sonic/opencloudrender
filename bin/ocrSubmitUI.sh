@@ -24,4 +24,4 @@ sleep 1
 echo "sleeping 2..."
 sleep 1
 echo "sleeping 1..."
-sleep 1
+sleep 60
