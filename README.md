@@ -70,6 +70,8 @@ Boto
 -----
 please copy .boto-default to your user-home and rename it to .boto
 now fill in your own aws credentials - also remove those <> brackets
+> **Note:**
+> Windows might complain that you cannot rename the file for some strange reason. Open the file in a texteditor and "Save as..." .boto
 
 LAUNCH:
 =======
