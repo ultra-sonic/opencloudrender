@@ -100,7 +100,7 @@ def download_files(data_bucket_name, frame_list , update_progress_signal=QtCore.
 def upload_file( bucket_name , file_path , strip_path_prefix='' ):
     if os.path.isfile( file_path ):
         create_folder( bucket_name , os.path.dirname( file_path ) , recursive=True , strip_path_prefix=strip_path_prefix )
-        upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix )
+        upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix=strip_path_prefix )
         return 0
     else:
         print 'Warning - file not found: ' + file_path
