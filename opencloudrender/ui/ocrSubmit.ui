@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1400</width>
-    <height>300</height>
+    <height>305</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -21,35 +21,35 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>20</y>
+      <y>60</y>
       <width>1161</width>
-      <height>170</height>
+      <height>120</height>
      </rect>
     </property>
     <property name="acceptDrops">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="syncAssetsAndSubmitButton">
+   <widget class="QPushButton" name="submitScenesButton">
     <property name="geometry">
      <rect>
       <x>1210</x>
-      <y>120</y>
-      <width>171</width>
-      <height>32</height>
+      <y>110</y>
+      <width>170</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="text">
-     <string>sync assets + submit</string>
+     <string>submit synced scenes</string>
     </property>
    </widget>
    <widget class="QPushButton" name="syncAssetsButton">
     <property name="geometry">
      <rect>
       <x>1210</x>
-      <y>80</y>
-      <width>171</width>
-      <height>32</height>
+      <y>70</y>
+      <width>170</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="text">
@@ -60,13 +60,13 @@
     <property name="geometry">
      <rect>
       <x>1210</x>
-      <y>160</y>
-      <width>171</width>
-      <height>32</height>
+      <y>150</y>
+      <width>170</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="text">
-     <string>sync images</string>
+     <string>sync rendered images</string>
     </property>
    </widget>
    <widget class="QPushButton" name="addScenesButton">
@@ -76,9 +76,9 @@
     <property name="geometry">
      <rect>
       <x>1210</x>
-      <y>20</y>
-      <width>171</width>
-      <height>32</height>
+      <y>30</y>
+      <width>170</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="text">
@@ -89,8 +89,8 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>230</y>
-      <width>341</width>
+      <y>190</y>
+      <width>450</width>
       <height>20</height>
      </rect>
     </property>
@@ -98,20 +98,20 @@
    <widget class="QLineEdit" name="repoBucketName">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>230</y>
-      <width>341</width>
+      <x>750</x>
+      <y>190</y>
+      <width>450</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QProgressBar" name="uploadProgressBar">
+   <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>200</y>
-      <width>1331</width>
-      <height>23</height>
+      <y>225</y>
+      <width>1161</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="value">
@@ -122,7 +122,7 @@
     <property name="geometry">
      <rect>
       <x>41</x>
-      <y>230</y>
+      <y>190</y>
       <width>100</width>
       <height>20</height>
      </rect>
@@ -134,8 +134,8 @@
    <widget class="QLabel" name="repoBucketNameLabel">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>230</y>
+      <x>610</x>
+      <y>190</y>
       <width>140</width>
       <height>20</height>
      </rect>
@@ -148,7 +148,7 @@
     <property name="geometry">
      <rect>
       <x>1220</x>
-      <y>50</y>
+      <y>10</y>
       <width>151</width>
       <height>20</height>
      </rect>
@@ -161,7 +161,7 @@
     <property name="geometry">
      <rect>
       <x>1080</x>
-      <y>225</y>
+      <y>30</y>
       <width>121</width>
       <height>26</height>
      </rect>
@@ -170,14 +170,114 @@
    <widget class="QLabel" name="vrayVersionLabel">
     <property name="geometry">
      <rect>
-      <x>980</x>
-      <y>230</y>
-      <width>91</width>
+      <x>930</x>
+      <y>35</y>
+      <width>141</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>V-Ray Version</string>
+     <string>default V-Ray Version</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cancelButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1210</x>
+      <y>220</y>
+      <width>170</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>cancel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="progressMessagelabel">
+    <property name="geometry">
+     <rect>
+      <x>95</x>
+      <y>250</y>
+      <width>1285</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>progressMessageLabel</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="arnoldVersionComboBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>30</y>
+      <width>121</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="arnoldVersionLabel">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>35</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>default Arnold Version</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="mantraVersionComboBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>30</y>
+      <width>121</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mantraVersionLabel">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>35</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>default Mantra Version</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="statusLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>250</y>
+      <width>50</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Status:</string>
     </property>
    </widget>
   </widget>
@@ -187,7 +287,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
