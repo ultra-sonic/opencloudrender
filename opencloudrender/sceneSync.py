@@ -10,6 +10,7 @@ class SyncAssetsThread(QtCore.QThread):
     # http://www.matteomattei.com/pyside-signals-and-slots-with-qthread-example/
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
+    update_status_signal = QtCore.Signal( str ) #create a custom signal we can subscribe to to emit update commands
     scene_synced_signal = QtCore.Signal( str )
 
     def __init__(self, parent=None ):
@@ -20,7 +21,7 @@ class SyncAssetsThread(QtCore.QThread):
         self.data_bucket_name = parent.data_bucket_name
 
     def run( self ):
-        self.update_progress_signal.emit( 'Start syncing assets to S3...' , 0 , 100 )
+        self.update_status_signal.emit( 'Start syncing assets to S3...')
 
         for scene in self.data_list:
             #convert uploadWithDependencies to an object for cancel funcion
@@ -56,10 +57,10 @@ class SyncAssetsThread(QtCore.QThread):
                 ret=1
 
             if ret != 0:
-                self.update_progress_signal.emit( "Warning: Done syncing assets, but some assets could not be uploaded!'" , progress_100 , progress_100 )
+                self.update_status_signal.emit( "Warning: Done syncing assets, but some assets could not be uploaded!'" )
                 # todo popup dialog
             else:
-                self.update_progress_signal.emit( "Done syncing assets to S3..." , progress_100 , progress_100 )
+                self.update_status_signal.emit( "Done syncing assets to S3..." )
                 self.scene_synced_signal.emit( scene_path )
 
     @QtCore.Slot()

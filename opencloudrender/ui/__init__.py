@@ -52,6 +52,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.data_list = self.table_model.getData()
         syncAssetsThread = SyncAssetsThread( parent=self ) # call with self as parent
         syncAssetsThread.update_progress_signal.connect( self.setProgress )
+        syncAssetsThread.update_status_signal.connect( self.setStatus )
         syncAssetsThread.scene_synced_signal.connect( self.setSceneSynced )
         syncAssetsThread.started.connect( self.disableAllButtons )
         syncAssetsThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
@@ -101,10 +102,13 @@ class ControlMainWindow(QtGui.QMainWindow):
             #todo implement folder handling here
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
+    def setStatus(self, status_message ):
+        self.ui.progressMessagelabel.setText( status_message )
+
     def setProgress(self, progress_message , progress_current , progress_max ):
         self.ui.progressBar.setMaximum( progress_max )
         self.ui.progressBar.setValue( progress_current )
-        self.ui.progressMessagelabel.setText( progress_message )
+        self.setStatus( progress_message )
         print( str( progress_current ) + ' / ' + str(progress_max) + ' : ' + progress_message )
 
     def enableAllButtons(self):
