@@ -1,5 +1,5 @@
-import os
-from path_utils import validate_file_path
+import os , re
+from pathUtils import validate_file_path
 
 
 def get_vray_settings( vrscene_path ):
@@ -20,12 +20,22 @@ def get_vray_settings( vrscene_path ):
                     vray_settings_dict[ key ] = value.lstrip('"').rstrip('"')
                 if line.find('}') > -1:
                     return vray_settings_dict
-    raise "No Vray Settings found"
+    raise KeyError("No Vray Settings found")
 
-def get_vrscene_data_tuple( vrscene_path ):
+def get_vrscene_data( vrscene_path ):
     vray_settings = get_vray_settings( vrscene_path )
+    default_camera = get_default_camera( vrscene_path )
     #return ( os.path.basename( vrscene_path ) , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' , vrscene_path )
-    return ( vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' )
+    return [ vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera , True , False ]
+
+
+def get_default_camera( vrscene_path ):
+    with open( vrscene_path , 'r' ) as vrscene:
+        for line in vrscene:
+            if line.startswith('CameraDefault '):
+                default_camera = line.split(' ')[1]
+                return default_camera
+    raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
 
 
 def get_output_image_path( vrscene_path ):
@@ -43,26 +53,26 @@ def get_output_image_path( vrscene_path ):
 
     raise Exception("No image_output_path found in vrscene" + vrscene_path )
 
-"""
-def get_anim_frame_padding( vrscene_path ):
+def getVrsceneDependencies( vrscene_path ):
+    asset_patterns=[' file=".*"']
+    included_vrscenes = []
+    assets = []
     with open( vrscene_path , 'r' ) as vrscene:
         for line in vrscene:
-            if line.find('anim_frame_padding=') > -1:
-                anim_frame_padding = line.rstrip(';\n').split('=')[-1]
-                return anim_frame_padding
-    raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
+            if line.startswith('#include') and line.find('.vrscene'):
+                included_vrscenes.append( line.split('"')[1] )
+            for pattern in asset_patterns:
+                regex = re.compile( pattern )
+                match = regex.search( line )
+                if match != None:
+                    file_path = line[ match.start() + pattern.find('"') + 1 : match.end()-1  ]
+                    if file_path != '':
+                        assets.append( file_path )
 
+    #recurse into included vrscenes
+    for included_scene in included_vrscenes:
+        #print "recursing into: " + included_scene
+        assets.extend( getVrsceneDependencies( included_scene ) )
 
-def get_anim_start_end( vrscene_path ):
-    anim_start = None
-    anim_end   = None
-    with open( vrscene_path , 'r' ) as vrscene:
-        for line in vrscene:
-            if line.find('anim_start=') > -1:
-                anim_start = line.rstrip(';\n').split('=')[-1]
-            if line.find('anim_end=') > -1:
-                anim_end  = line.rstrip(';\n').split('=')[-1]
-            if anim_start!=None and anim_end!=None:
-                return( anim_start , anim_end )
-    raise Exception("No anim_start or anim_end found in vrscene" + vrscene_path )
-"""
+    assets.extend( included_vrscenes )
+    return assets
