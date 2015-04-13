@@ -15,12 +15,12 @@ class SyncAssetsThread(QtCore.QThread):
     update_status_signal = QtCore.Signal( str ) #create a custom signal we can subscribe to to emit update commands
     scene_synced_signal = QtCore.Signal( str )
 
-    def __init__(self, parent=None ):
-        super(SyncAssetsThread,self).__init__(parent)
+    def __init__(self, data_list , data_bucket_name ):
+        super(SyncAssetsThread,self).__init__()
         self.exiting = False
-        self.data_list = parent.data_list
+        self.data_list = data_list
         logging.debug( self.data_list )
-        self.data_bucket_name = parent.data_bucket_name
+        self.data_bucket_name = data_bucket_name
 
     def run( self ):
         self.update_status_signal.emit( 'Start syncing assets to S3...')

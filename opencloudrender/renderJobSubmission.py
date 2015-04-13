@@ -60,11 +60,11 @@ class SubmitScenesThread(QtCore.QThread):
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
 
-    def __init__(self, parent=None ):
-        super(SubmitScenesThread,self).__init__(parent)
+    def __init__( self, data_list , data_bucket_name ):
+        super(SubmitScenesThread,self).__init__()
         self.exiting = False
-        self.data_list = parent.data_list
-        self.renderer_version = parent.ui.vrayVersionComboBox.currentText()
+        self.data_list = data_list
+        self.renderer_version # get from data_list
 
     def run(self):
         prog=0
