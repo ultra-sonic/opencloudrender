@@ -1,11 +1,12 @@
 # Import afanasy python module ( must be in PYTHONPATH).
+import logging
 from PySide import QtCore
 import os , af
 from pathUtils import validate_file_path
 from vrayUtils import get_vray_settings
 
 def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_frame_override = -1 , priority=99 , preview_frames=False , vray_release_type="official" , vray_build="24002" , host_application="Maya" , host_application_version="2015" ):
-    print "Start sending job to server..."
+    logging.info( "Start sending job to server..." )
     # UI Options -- TODO implement!!
 
     # Create a job.
@@ -27,7 +28,7 @@ def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_
 
     AFcmd= u'vray {0} {1} {2} {3} {4} @#@ @#@ {5} {6}'.format( vray_release_type , vray_build , host_application , host_application_version , vrscene_path , step_size , os.path.join( output_image_path[0] , output_image_path[1] ) )
 
-    print AFcmd
+    logging.debug( "AFcmd: " + AFcmd )
 
     block = af.Block( vrscene_path , 'vray' )
     job.blocks.append(block)
@@ -44,12 +45,12 @@ def sendToAfanasy( vrscene_path , step_size=1 , start_frame_override = -1 , end_
 
     # Send job to Afanasy server.
     result=job.send( verbose=True )
-    print "Result: " + str(result)
+    logging.debug( "Result: " + str(result) )
     if result[0]:
-        print "Finished sending job to server..."
+        logging.info( "Finished sending job to server..." )
         return True
     else:
-        print "ERROR: Failed sending job to server..."
+        logging.error( "Failed sending job to server..." )
         return False
 
 class SubmitScenesThread(QtCore.QThread):

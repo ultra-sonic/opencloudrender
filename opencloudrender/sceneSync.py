@@ -1,7 +1,8 @@
+import logging
 import os
 from PySide import QtCore
 from opencloudrender.pathUtils import validate_file_path, add_padding_to_image_path
-from opencloudrender.vrayUtils import getVrsceneDependencies, get_vray_settings
+from opencloudrender.vrayUtils import get_vrscene_dependencies, get_vray_settings
 import s3IO
 
 class SyncAssetsThread(QtCore.QThread):
@@ -18,7 +19,7 @@ class SyncAssetsThread(QtCore.QThread):
         super(SyncAssetsThread,self).__init__(parent)
         self.exiting = False
         self.data_list = parent.data_list
-        print self.data_list
+        logging.debug( self.data_list )
         self.data_bucket_name = parent.data_bucket_name
 
     def run( self ):
@@ -27,12 +28,12 @@ class SyncAssetsThread(QtCore.QThread):
             #convert uploadWithDependencies to an object for cancel funcion
             scene_path = scene[0]
             scene_basename=os.path.basename( scene_path )
-            print "DEBUG scene_path: " + scene_path
+            logging.debug( 'scene_path: ' + scene_path )
             ret = 0
             progress_current = 0
 
             if scene_path.endswith('.vrscene'):
-                dependencies = getVrsceneDependencies( scene_path )
+                dependencies = get_vrscene_dependencies( scene_path )
             elif scene_path.endswith('.ass'):
                 dependencies = getAssDependencies( scene_path )
             elif scene_path.endswith('.ifd'):

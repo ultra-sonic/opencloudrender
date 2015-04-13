@@ -1,3 +1,4 @@
+import logging
 from PySide import QtGui,QtCore
 import os
 import ocrSubmit
@@ -62,6 +63,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         syncAssetsThread.start()
 
     def setSceneSynced(self , scene_path ):
+        logging.debug('scene synced: ' + scene_path)
         self.table_model.setSynced( scene_path )
 
     def submitScenes(self):
@@ -89,9 +91,11 @@ class ControlMainWindow(QtGui.QMainWindow):
         if e.mimeData().hasUrls():
             e.accept()
         else:
+            logging.error('discarded dragEnterEvent:' + e )
             e.ignore()
 
     def dropEvent(self, e):
+        logging.debug('accepted dropEvent:' + e )
         pathList=e.mimeData().urls()
         self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         for url in pathList:
@@ -100,6 +104,8 @@ class ControlMainWindow(QtGui.QMainWindow):
                 vrscene_data = get_vrscene_data( path )
                 self.table_model.add( vrscene_data  )
                 self.ui.scenesTableView.resizeColumnsToContents()
+            elif os.path.isdir(path):
+                logging.debug('Path dropped - unsupported at the moment - sorry!')
             #todo implement folder handling here
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
