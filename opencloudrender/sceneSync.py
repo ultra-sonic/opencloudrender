@@ -10,6 +10,7 @@ class SyncAssetsThread(QtCore.QThread):
     # http://www.matteomattei.com/pyside-signals-and-slots-with-qthread-example/
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
+    increment_progress_signal = QtCore.Signal( float ) #create a custom signal we can subscribe to to emit update commands
     update_status_signal = QtCore.Signal( str ) #create a custom signal we can subscribe to to emit update commands
     scene_synced_signal = QtCore.Signal( str )
 
@@ -22,7 +23,6 @@ class SyncAssetsThread(QtCore.QThread):
 
     def run( self ):
         self.update_status_signal.emit( 'Start syncing assets to S3...')
-
         for scene in self.data_list:
             #convert uploadWithDependencies to an object for cancel funcion
             scene_path = scene[0]
@@ -39,10 +39,11 @@ class SyncAssetsThread(QtCore.QThread):
                 dependencies = getIFDDependencies( scene_path )
 
             progress_100 = len( dependencies )+1
+            self.update_progress_signal.emit( 'Syncing scene: ' + scene_path , progress_current , progress_100 )
 
             for asset in dependencies:
                 if self.exiting==False:
-                    if s3IO.upload_file( self.data_bucket_name , asset ) != 0:
+                    if s3IO.upload_file( self.data_bucket_name , asset ) != 0: # todo make upload a thread for cancel functionality and see if we can finally implement fine grained progress (make the callback a function in the thread object and emit a signal
                         ret=1
                     progress_current=progress_current+1
                     self.update_progress_signal.emit( scene_basename + ' : ' + os.path.basename( asset ) , progress_current , progress_100 )
@@ -50,11 +51,12 @@ class SyncAssetsThread(QtCore.QThread):
                     self.update_progress_signal.emit( scene_basename + ' : sync canceled by user' , progress_current , progress_100 )
                     return 2 #user abort
 
+            if s3IO.upload_file( self.data_bucket_name , scene_path ) != 0:
+                ret=1
+
             progress_current=progress_current+1
             self.update_progress_signal.emit( scene_path , progress_current , progress_100 )
 
-            if s3IO.upload_file( self.data_bucket_name , scene_path ) != 0:
-                ret=1
 
             if ret != 0:
                 self.update_status_signal.emit( "Warning: Done syncing assets, but some assets could not be uploaded!'" )

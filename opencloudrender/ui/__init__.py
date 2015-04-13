@@ -52,6 +52,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.data_list = self.table_model.getData()
         syncAssetsThread = SyncAssetsThread( parent=self ) # call with self as parent
         syncAssetsThread.update_progress_signal.connect( self.setProgress )
+        syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
         syncAssetsThread.update_status_signal.connect( self.setStatus )
         syncAssetsThread.scene_synced_signal.connect( self.setSceneSynced )
         syncAssetsThread.started.connect( self.disableAllButtons )
@@ -110,6 +111,10 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.progressBar.setValue( progress_current )
         self.setStatus( progress_message )
         print( str( progress_current ) + ' / ' + str(progress_max) + ' : ' + progress_message )
+
+    def incrementProgress(self , increment ):
+        progress_current = self.ui.progressBar.value()
+        self.ui.progressBar.setValue( progress_current + increment )
 
     def enableAllButtons(self):
         self.ui.syncAssetsButton.setEnabled(True)
