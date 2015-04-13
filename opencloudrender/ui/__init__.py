@@ -13,7 +13,7 @@ class ControlMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(ControlMainWindow, self).__init__(parent)
 
-        self.header = [ 'scenepath', 'start', 'end', 'camera' , 'submit' , 'synced' ]
+        self.header = [ 'scenepath', 'start', 'end', 'camera' , 'submit' , 'synced' ,  'renderer build' ]
         self.data_list = []
         self.table_model = ScenesTableModel(self, self.header) #maybe skip passing of data_list and header and use parent.data_list in ScenesTableModel
         self.data_bucket_name = "fbcloudrender-testdata"
@@ -50,8 +50,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.progressMessagelabel.setText( '' )
 
     def syncAssets(self):
-        self.data_list = self.table_model.getData()
-        syncAssetsThread = SyncAssetsThread( parent=self ) # call with self as parent
+        #self.data_list = self.table_model.getData()
+        syncAssetsThread = SyncAssetsThread( self.data_list , self.data_bucket_name )
         syncAssetsThread.update_progress_signal.connect( self.setProgress )
         syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
         syncAssetsThread.update_status_signal.connect( self.setStatus )
@@ -67,8 +67,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.table_model.setSynced( scene_path )
 
     def submitScenes(self):
-        self.data_list = self.table_model.getData()
-        submitScenesThread = SubmitScenesThread( parent=self ) # call with self as parent
+        #self.data_list = self.table_model.getData()
+        submitScenesThread = SubmitScenesThread( self.data_list , self.data_bucket_name ) # call with self as parent
         submitScenesThread.update_progress_signal.connect( self.setProgress )
         submitScenesThread.started.connect( self.disableAllButtons )
         submitScenesThread.terminated.connect( self.enableAllButtons )
@@ -91,21 +91,23 @@ class ControlMainWindow(QtGui.QMainWindow):
         if e.mimeData().hasUrls():
             e.accept()
         else:
-            logging.error('discarded dragEnterEvent:' + e )
             e.ignore()
 
     def dropEvent(self, e):
-        logging.debug('accepted dropEvent:' + e )
+        logging.debug('accepted dropEvent' )
         pathList=e.mimeData().urls()
         self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         for url in pathList:
             path=url.toLocalFile()
             if os.path.isfile(path) and path.endswith('.vrscene'):
                 vrscene_data = get_vrscene_data( path )
-                self.table_model.add( vrscene_data  )
+                vray_build = self.ui.vrayVersionComboBox.currentText()
+                self.table_model.add( vrscene_data , vray_build ) # extend by default vray version from ui
                 self.ui.scenesTableView.resizeColumnsToContents()
             elif os.path.isdir(path):
                 logging.debug('Path dropped - unsupported at the moment - sorry!')
+            else:
+                logging.error( 'Unsupported url:' + url)
             #todo implement folder handling here
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
@@ -142,9 +144,10 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         QtCore.QAbstractTableModel.__init__(self, parent, *args)
         self.scene_data_list = []
         self.header = header
-    def add( self , vrscene_data ):
-        if vrscene_data not in self.scene_data_list:
-            self.scene_data_list.append( vrscene_data )
+    def add( self , scene_data , renderer_build ):
+        scene_data.append( renderer_build )
+        if scene_data not in self.scene_data_list:
+            self.scene_data_list.append( scene_data  )
             self.sort( 0 , QtCore.Qt.AscendingOrder )
 
     def rowCount(self, parent):
@@ -160,9 +163,12 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
     def flags(self, index ):
         if index.column() == 1 or index.column() == 2:
             flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled
-            return flags
+        elif index.column() == 4:
+            # todo make this sucker checkable!!!
+            flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
         else:
-            return QtCore.Qt.ItemIsEnabled
+            flags = QtCore.Qt.ItemIsEnabled
+        return flags
     """
     def setData(self, index, value):
         self.arraydata[index.row()][index.column()] = value
@@ -183,10 +189,17 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
             return None
         elif role == QtCore.Qt.TextAlignmentRole:
             return QtCore.Qt.AlignCenter
-        if index.column() == 0:
-            return os.path.basename( self.scene_data_list[index.row()][index.column()] )
+        elif role == QtCore.Qt.CheckStateRole:
+            if index.column() == 4:
+                if self.scene_data_list[index.row()][index.column()] == True:
+                    return QtCore.Qt.Checked
+                else:
+                    return QtCore.Qt.Unchecked
         else:
-            return self.scene_data_list[index.row()][index.column()]
+            if index.column() == 0:
+                return os.path.basename( self.scene_data_list[index.row()][index.column()] )
+            else:
+                return self.scene_data_list[index.row()][index.column()]
 
     def getData(self):
         return self.scene_data_list
