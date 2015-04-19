@@ -59,28 +59,40 @@ class SubmitScenesThread(QtCore.QThread):
     # http://www.matteomattei.com/pyside-signals-and-slots-with-qthread-example/
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
+    update_status_signal = QtCore.Signal( str ) #create a custom signal we can subscribe to to emit update commands
+    scene_synced_signal = QtCore.Signal( str )
 
-    def __init__( self, data_list , data_bucket_name ):
+    def __init__( self, scene_data_list ):
         super(SubmitScenesThread,self).__init__()
         self.exiting = False
-        self.data_list = data_list
-        self.renderer_version # get from data_list
+        self.scene_data_list = scene_data_list
+        logging.debug( "SyncAssetsThread - scene_data_list" )
+        logging.debug( self.scene_data_list )
 
     def run(self):
+        # get valid submission candidates from scene_data_list
+        valid_scenes=[]
+        for scene in self.scene_data_list:
+            if scene[4]==True and scene[5]==True: #check if submit and sync is True
+                valid_scenes.append( scene )
         prog=0
-        prog_max=len(self.data_list)
-        for scene in self.data_list:
-            if self.exiting==False:
-                if scene[4]==True and scene[5]==True: #check if submit and sync is True
-                    self.update_progress_signal.emit( 'sending job: ' + scene[0] , prog , prog_max )
-                    if sendToAfanasy( scene[0] , priority=50 , vray_build=self.renderer_version )==False:
-                        self.update_progress_signal.emit( 'error sending: ' + scene[0] + ' - aborting', prog , prog_max )
-                        return
-            else:
-                self.update_progress_signal.emit( 'canceled sending of: ' + scene[0] , prog , prog_max )
-            prog=prog+1
-        self.update_progress_signal.emit( 'submission of ' + str(prog_max) + ' jobs done! ' , prog , prog_max )
-
+        prog_max=len( valid_scenes )
+        if prog_max:
+            for scene in valid_scenes:
+                if self.exiting==False:
+                        start_frame=scene[1]
+                        end_frame=scene[2]
+                        renderer_version = scene[6]
+                        self.update_progress_signal.emit( 'sending job: ' + scene[0] , prog , prog_max )
+                        if sendToAfanasy( scene[0] , priority=50 , start_frame_override=start_frame , end_frame_override=end_frame , vray_build=renderer_version )==False:
+                            self.update_progress_signal.emit( 'error sending: ' + scene[0] + ' - aborting', prog , prog_max )
+                            return
+                else:
+                    self.update_progress_signal.emit( 'canceled sending of: ' + scene[0] , prog , prog_max )
+                prog=prog+1
+            self.update_progress_signal.emit( 'submission of ' + str(prog_max) + ' jobs done! ' , prog , prog_max )
+        else:
+            self.update_status_signal.emit( 'Nothing to submit! Have you synced your scenes?' )
 
     @QtCore.Slot()
     def cancel(self):

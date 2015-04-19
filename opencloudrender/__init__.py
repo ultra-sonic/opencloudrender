@@ -6,12 +6,16 @@ from pathUtils import validate_file_path, add_padding_to_image_path
 from PySide import QtGui
 import ui
 
-#setup logging
-from datetime import datetime
-dt=datetime.now()
+#from datetime import datetime
+#dt=datetime.now()
 import logging
-log_dir=os.environ.get('TEMP' , '.' )
-log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender_' + dt.strftime( format='%m%d%Y%_H%M%S' ) + '.log' )
+import tempfile
+
+# ENABLE LOGGING
+log_dir = tempfile.gettempdir()
+# append date to log-filename
+# log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender_' + dt.strftime( format='%m%d%Y%_H%M%S' ) + '.log' )
+log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender.log' )
 logging.basicConfig(format='%(asctime)s ::: %(levelname)s ::: %(message)s', datefmt='%m/%d/%Y %H:%M:%S' , level=logging.DEBUG , filename=log_file )
 print "logging to: " + log_file
 
@@ -21,9 +25,14 @@ logging.debug( "S3 Data Bucket: " + data_bucket_name )
 def showUI():
     logging.debug( 'showing UI')
     app = QtGui.QApplication(sys.argv)
-    #win = modelViewTest.MyWindow( )
-    #win.show()
     mySW = ui.ControlMainWindow()
+
+    desktop=QtGui.QDesktopWidget()
+    # Position on top left of second screen for debugging
+    mySW.move( desktop.screenGeometry( desktop.screenCount() -1 ).left() , 0 )
+    # center on current screen for release
+    #mySW.move( desktop.screenGeometry(0).center() - mySW.rect().center() )
+
     mySW.show()
     sys.exit(app.exec_())
 
