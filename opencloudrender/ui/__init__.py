@@ -25,9 +25,11 @@ class ControlMainWindow(QtGui.QMainWindow):
         #Table
         self.ui.scenesTableView.setModel( self.table_model )
 
-        #Threads
-        #self.syncAssetsThread = SyncAssetsThread( )
-        #self.syncAssets.update_progress_signal.connect(self.setProgress)
+        # Threads - need to be assigned to a non-local variable so they won't get garbage collected as described here:
+        # http://stackoverflow.com/questions/15702782/qthread-destroyed-while-thread-is-still-running
+        self.syncAssetsThread = None
+        self.submitScenesThread = None
+        self.syncImagesThread = None
 
         #Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
@@ -54,16 +56,16 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def syncAssets(self):
         #self.scene_data_list = self.table_model.getData()
-        syncAssetsThread = SyncAssetsThread( scene_data_list = self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
-        syncAssetsThread.update_progress_signal.connect( self.setProgress )
-        syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
-        syncAssetsThread.update_status_signal.connect( self.setStatus )
-        syncAssetsThread.scene_synced_signal.connect( self.setSceneSynced )
-        syncAssetsThread.started.connect( self.disableAllButtons )
-        syncAssetsThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
-        syncAssetsThread.finished.connect( self.enableAllButtons )
-        self.ui.cancelButton.clicked.connect( syncAssetsThread.cancel )
-        syncAssetsThread.start()
+        self.syncAssetsThread = SyncAssetsThread( scene_data_list = self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
+        self.syncAssetsThread.update_progress_signal.connect( self.setProgress )
+        self.syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
+        self.syncAssetsThread.update_status_signal.connect( self.setStatus )
+        self.syncAssetsThread.scene_synced_signal.connect( self.setSceneSynced )
+        self.syncAssetsThread.started.connect( self.disableAllButtons )
+        self.syncAssetsThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
+        self.syncAssetsThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( self.syncAssetsThread.cancel )
+        self.syncAssetsThread.start()
 
     def setSceneSynced(self , scene_path ):
         logging.debug('scene synced: ' + scene_path)
@@ -71,24 +73,24 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def submitScenes(self):
         #self.scene_data_list = self.table_model.getData()
-        submitScenesThread = SubmitScenesThread( scene_data_list=self.table_model.scene_data_list )
-        submitScenesThread.update_progress_signal.connect( self.setProgress )
-        submitScenesThread.update_status_signal.connect( self.setStatus )
-        submitScenesThread.started.connect( self.disableAllButtons )
-        submitScenesThread.terminated.connect( self.enableAllButtons )
-        submitScenesThread.finished.connect( self.enableAllButtons )
-        self.ui.cancelButton.clicked.connect( submitScenesThread.cancel )
-        submitScenesThread.start()
+        self.submitScenesThread = SubmitScenesThread( scene_data_list=self.table_model.scene_data_list )
+        self.submitScenesThread.update_progress_signal.connect( self.setProgress )
+        self.submitScenesThread.update_status_signal.connect( self.setStatus )
+        self.submitScenesThread.started.connect( self.disableAllButtons )
+        self.submitScenesThread.terminated.connect( self.enableAllButtons )
+        self.submitScenesThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( self.submitScenesThread.cancel )
+        self.submitScenesThread.start()
 
     def syncImages(self):
         #self.data_list = self.table_model.getData()
-        syncImagesThread = SyncImagesThread( scene_data_list=self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
-        syncImagesThread.update_progress_signal.connect( self.setProgress )
-        syncImagesThread.started.connect( self.disableAllButtons )
-        syncImagesThread.terminated.connect( self.enableAllButtons )
-        syncImagesThread.finished.connect( self.enableAllButtons )
-        self.ui.cancelButton.clicked.connect( syncImagesThread.cancel )
-        syncImagesThread.start()
+        self.syncImagesThread = SyncImagesThread( scene_data_list=self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
+        self.syncImagesThread.update_progress_signal.connect( self.setProgress )
+        self.syncImagesThread.started.connect( self.disableAllButtons )
+        self.syncImagesThread.terminated.connect( self.enableAllButtons )
+        self.syncImagesThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( self.syncImagesThread.cancel )
+        self.syncImagesThread.start()
 
     def dragEnterEvent(self, e):
 
