@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from s3IO import upload_files,create_folders
@@ -14,7 +15,7 @@ def push( bucket_name , repo_root_dir='/opt/vray' , releaseType="official" , bui
         create_folders( bucket_name , source_dir , dir_names  , repo_root_dir )
         if file_names!=[] and source_dir.find( releaseType )>-1 and source_dir.find( build )>-1 and source_dir.find( host_app )>-1 and source_dir.find( operating_system )>-1 or source_dir==repo_root_dir: #source_dir==repo_root_dir is to always update root dir including the vrclient.xml
             # if debug_count < 2: # uncomment this to debug with less files
-                print( '{0} ::: {1} ::: {2}'.format( source_dir, dir_names, file_names ) )
+                logging.debug( '{0} ::: {1} ::: {2}'.format( source_dir, dir_names, file_names ) )
                 upload_files  ( bucket_name , source_dir , file_names , repo_root_dir , exclude_list = ['/docs/' , '/samples/'] )
                 debug_count+=1
     return 0
