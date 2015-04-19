@@ -1,9 +1,10 @@
+import logging
 import os , re
 from pathUtils import validate_file_path
 
 
 def get_vray_settings( vrscene_path ):
-    print "DEBUG - reading vrscene: " + os.path.basename( vrscene_path )
+    logging.debug( "Reading vrscene: " + os.path.basename( vrscene_path ) )
     vray_settings_dict={}
     vray_settings_output_found=False
     with open( vrscene_path , 'r' ) as vrscene:
@@ -20,13 +21,18 @@ def get_vray_settings( vrscene_path ):
                     vray_settings_dict[ key ] = value.lstrip('"').rstrip('"')
                 if line.find('}') > -1:
                     return vray_settings_dict
-    raise KeyError("No Vray Settings found")
+    error_msg="No Vray Settings found"
+    logging.error( error_msg )
+    raise KeyError( error_msg )
 
 def get_vrscene_data( vrscene_path ):
+    logging.debug('get_vrscene_data: ' + vrscene_path )
     vray_settings = get_vray_settings( vrscene_path )
     default_camera = get_default_camera( vrscene_path )
     #return ( os.path.basename( vrscene_path ) , vray_settings['anim_start'] , vray_settings['anim_end'] , 'cam TDB' , vrscene_path )
-    return [ vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera , True , False ]
+    ret_val= [ vrscene_path , vray_settings['anim_start'] , vray_settings['anim_end'] , default_camera , True , False ]
+    logging.debug( ret_val )
+    return ret_val
 
 
 def get_default_camera( vrscene_path ):
@@ -53,7 +59,8 @@ def get_output_image_path( vrscene_path ):
 
     raise Exception("No image_output_path found in vrscene" + vrscene_path )
 
-def getVrsceneDependencies( vrscene_path ):
+def get_vrscene_dependencies( vrscene_path ):
+    logging.debug('get_vrscene_dependencies: ' + vrscene_path )
     asset_patterns=[' file=".*"']
     included_vrscenes = []
     assets = []
@@ -72,7 +79,8 @@ def getVrsceneDependencies( vrscene_path ):
     #recurse into included vrscenes
     for included_scene in included_vrscenes:
         #print "recursing into: " + included_scene
-        assets.extend( getVrsceneDependencies( included_scene ) )
+        assets.extend( get_vrscene_dependencies( included_scene ) )
 
     assets.extend( included_vrscenes )
+    logging.debug( assets )
     return assets
