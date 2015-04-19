@@ -43,8 +43,11 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         self.ui.arnoldVersionComboBox.addItem('4.2.4.1')
 
-        self.ui.vrayVersionComboBox.addItem('24002')
         self.ui.vrayVersionComboBox.addItem('30001')
+        self.ui.vrayVersionComboBox.addItem('24002')
+        vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText(os.environ.get('VRAY_VERSION' , '30001' ))
+        if vrayVersionComboBox_index > -1:
+            self.ui.vrayVersionComboBox.setCurrentIndex( vrayVersionComboBox_index )
 
         #Labels
         self.ui.progressMessagelabel.setText( '' )
@@ -234,7 +237,8 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         if not index.isValid():
             return None
         elif role == QtCore.Qt.TextAlignmentRole:
-            return QtCore.Qt.AlignCenter
+            if index.column() != 0:
+                return QtCore.Qt.AlignCenter
         elif role == QtCore.Qt.CheckStateRole:
             if index.column() == 4 or index.column() == 5:
                 if self.scene_data_list[index.row()][index.column()] == True:
