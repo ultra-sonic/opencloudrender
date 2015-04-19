@@ -15,16 +15,17 @@ class SyncAssetsThread(QtCore.QThread):
     update_status_signal = QtCore.Signal( str ) #create a custom signal we can subscribe to to emit update commands
     scene_synced_signal = QtCore.Signal( str )
 
-    def __init__(self, data_list , data_bucket_name ):
+    def __init__(self, scene_data_list , data_bucket_name ):
         super(SyncAssetsThread,self).__init__()
         self.exiting = False
-        self.data_list = data_list
-        logging.debug( self.data_list )
+        self.scene_data_list = scene_data_list
+        logging.debug( "SyncAssetsThread - scene_data_list" )
+        logging.debug( self.scene_data_list )
         self.data_bucket_name = data_bucket_name
 
     def run( self ):
         self.update_status_signal.emit( 'Start syncing assets to S3...')
-        for scene in self.data_list:
+        for scene in self.scene_data_list:
             #convert uploadWithDependencies to an object for cancel funcion
             scene_path = scene[0]
             scene_basename=os.path.basename( scene_path )
@@ -77,15 +78,15 @@ class SyncImagesThread(QtCore.QThread):
 
     update_progress_signal = QtCore.Signal( str , int , int ) #create a custom signal we can subscribe to to emit update commands
 
-    def __init__(self, parent=None ):
-        super(SyncImagesThread,self).__init__(parent)
+    def __init__(self, scene_data_list , data_bucket_name ):
+        super(SyncImagesThread,self).__init__()
         self.exiting = False
-        self.data_list = parent.data_list
-        self.data_bucket_name = parent.data_bucket_name
+        self.scene_data_list = scene_data_list
+        self.data_bucket_name = data_bucket_name
 
     def run( self ):
         self.update_progress_signal.emit( 'Start syncing images from S3...' , 0 , 1 )
-        for scene in self.data_list:
+        for scene in self.scene_data_list:
             #opencloudrender.download_image_s3( self.ui.dataBucketName.text() , scene[0] , progress_bar=self.ui.progressBar )
             # get outout images from vrscene
             # download them from s3

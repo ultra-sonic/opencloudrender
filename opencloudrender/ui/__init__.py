@@ -14,8 +14,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         super(ControlMainWindow, self).__init__(parent)
 
         self.header = [ 'scenepath', 'start', 'end', 'camera' , 'submit' , 'synced' ,  'renderer build' ]
-        self.data_list = []
-        self.table_model = ScenesTableModel(self, self.header) #maybe skip passing of data_list and header and use parent.data_list in ScenesTableModel
+        #self.scene_data_list = []
+        self.table_model = ScenesTableModel(self, self.header) #maybe skip passing of scene_data_list and header and use parent.scene_data_list in ScenesTableModel
         self.data_bucket_name = "fbcloudrender-testdata"
         #UI
 
@@ -43,15 +43,15 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         self.ui.arnoldVersionComboBox.addItem('4.2.4.1')
 
-        self.ui.vrayVersionComboBox.addItem('30001')
         self.ui.vrayVersionComboBox.addItem('24002')
+        self.ui.vrayVersionComboBox.addItem('30001')
 
         #Labels
         self.ui.progressMessagelabel.setText( '' )
 
     def syncAssets(self):
-        #self.data_list = self.table_model.getData()
-        syncAssetsThread = SyncAssetsThread( self.data_list , self.data_bucket_name )
+        #self.scene_data_list = self.table_model.getData()
+        syncAssetsThread = SyncAssetsThread( scene_data_list = self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
         syncAssetsThread.update_progress_signal.connect( self.setProgress )
         syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
         syncAssetsThread.update_status_signal.connect( self.setStatus )
@@ -64,12 +64,13 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def setSceneSynced(self , scene_path ):
         logging.debug('scene synced: ' + scene_path)
-        self.table_model.setSynced( scene_path )
+        self.table_model.setScenepathSynced( scene_path )
 
     def submitScenes(self):
-        #self.data_list = self.table_model.getData()
-        submitScenesThread = SubmitScenesThread( self.data_list , self.data_bucket_name ) # call with self as parent
+        #self.scene_data_list = self.table_model.getData()
+        submitScenesThread = SubmitScenesThread( scene_data_list=self.table_model.scene_data_list )
         submitScenesThread.update_progress_signal.connect( self.setProgress )
+        submitScenesThread.update_status_signal.connect( self.setStatus )
         submitScenesThread.started.connect( self.disableAllButtons )
         submitScenesThread.terminated.connect( self.enableAllButtons )
         submitScenesThread.finished.connect( self.enableAllButtons )
@@ -77,8 +78,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         submitScenesThread.start()
 
     def syncImages(self):
-        self.data_list = self.table_model.getData()
-        syncImagesThread = SyncImagesThread( parent=self ) # call with self as parent
+        #self.data_list = self.table_model.getData()
+        syncImagesThread = SyncImagesThread( scene_data_list=self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
         syncImagesThread.update_progress_signal.connect( self.setProgress )
         syncImagesThread.started.connect( self.disableAllButtons )
         syncImagesThread.terminated.connect( self.enableAllButtons )
@@ -163,18 +164,46 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
     def flags(self, index ):
         if index.column() == 1 or index.column() == 2:
             flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled
-        elif index.column() == 4:
+        elif index.column() == 4 or index.column() == 5:
             # todo make this sucker checkable!!!
-            flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
+            flags = QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
         else:
             flags = QtCore.Qt.ItemIsEnabled
         return flags
-    """
-    def setData(self, index, value):
-        self.arraydata[index.row()][index.column()] = value
-        return True
-    """
-    def setSynced(self , scene_path ):
+
+    def setData(self, index, value, role):
+        #self.arraydata[index.row()][index.column()] = value
+        row=index.row()
+        col=index.column()
+        print "set row/col" + str(row) + "/" + str(col) + " to " + str( value )
+        if   col == 1:
+            self.setRowStartFrame( row , value )
+        elif col == 2:
+            self.setRowEndFrame( row , value )
+        elif col == 4:
+            self.setRowSubmit( row , value )
+            return True
+        elif col ==5:
+            self.setRowSynced( row , value )
+            return True
+        return False
+
+    def setRowStartFrame(self , row , value):
+        # todo - do not alloe setting start/end outside of renderable framebounds
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
+        scene = self.scene_data_list[ row ]
+        scene[1] = value
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
+
+    def setRowEndFrame(self , row , value):
+        # todo - do not alloe setting start/end outside of renderable framebounds
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
+        scene = self.scene_data_list[ row ]
+        scene[2] = value
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
+
+
+    def setScenepathSynced(self , scene_path ):
         self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         for scene in self.scene_data_list:
             if scene[0] == scene_path:
@@ -182,28 +211,49 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
                 break
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
+    def setRowSynced(self , row , value):
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
+        scene = self.scene_data_list[ row ]
+        if value:
+            scene[5] = True
+        else:
+            scene[5] = False
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
+
+
+    def setRowSubmit(self , row , value):
+        self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
+        scene = self.scene_data_list[ row ]
+        if value:
+            scene[4] = True
+        else:
+            scene[4] = False
+        self.emit(QtCore.SIGNAL('layoutChanged()'))
+
     def data(self, index, role):
         if not index.isValid():
-            return None
-        elif role != QtCore.Qt.DisplayRole:
             return None
         elif role == QtCore.Qt.TextAlignmentRole:
             return QtCore.Qt.AlignCenter
         elif role == QtCore.Qt.CheckStateRole:
-            if index.column() == 4:
+            if index.column() == 4 or index.column() == 5:
                 if self.scene_data_list[index.row()][index.column()] == True:
                     return QtCore.Qt.Checked
                 else:
                     return QtCore.Qt.Unchecked
-        else:
+        elif role == QtCore.Qt.DisplayRole:
             if index.column() == 0:
                 return os.path.basename( self.scene_data_list[index.row()][index.column()] )
             else:
                 return self.scene_data_list[index.row()][index.column()]
+        else:
+            return None
 
+    """
+    obsolete for now
     def getData(self):
         return self.scene_data_list
-
+    """
     def headerData(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self.header[col]
