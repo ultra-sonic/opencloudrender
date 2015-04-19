@@ -59,8 +59,9 @@ def get_output_image_path( vrscene_path ):
 
     raise Exception("No image_output_path found in vrscene" + vrscene_path )
 
-def get_vrscene_dependencies( vrscene_path ):
+def get_vrscene_dependencies( vrscene_path , recursion_depth=0 ):
     logging.debug('get_vrscene_dependencies: ' + vrscene_path )
+    logging.debug('recursion_depth: ' + str(recursion_depth ) )
     asset_patterns=[' file=".*"']
     included_vrscenes = []
     assets = []
@@ -79,7 +80,7 @@ def get_vrscene_dependencies( vrscene_path ):
     #recurse into included vrscenes
     for included_scene in included_vrscenes:
         #print "recursing into: " + included_scene
-        assets.extend( get_vrscene_dependencies( included_scene ) )
+        assets.extend( get_vrscene_dependencies( included_scene , recursion_depth=recursion_depth+1) )
 
     assets.extend( included_vrscenes )
     logging.debug( assets )
