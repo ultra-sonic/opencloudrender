@@ -68,7 +68,7 @@ def test_upload_image_s3():
 
 def test_getDependencies():
     print "test_getDependencies"
-    assets = ocr.sceneSync.getVrsceneDependencies( vrscene_path )
+    assets = ocr.sceneSync.get_vrscene_dependencies( vrscene_path )
     print assets
 
 test_upload_image_s3()

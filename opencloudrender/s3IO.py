@@ -2,6 +2,7 @@ from PySide import QtCore
 import boto
 import boto.s3
 import hashlib
+import logging
 
 import os
 import sys
@@ -15,7 +16,7 @@ PART_SIZE = 6 * 1000 * 1000
 try:
     conn = boto.connect_s3()
 except boto.exception.NoAuthHandlerFound:
-    print 'No s3 credentials found - you cannot submit!'
+    logging.warning( 'No s3 credentials found - you cannot submit!' )
 
 existing_buckets=dict()
 
@@ -34,15 +35,17 @@ def get_bucket( bucket_name , auto_create=False , parent=None ):
         try:
             bucket = conn.get_bucket(bucket_name)
         except boto.exception.S3ResponseError as e:
-            print 'Bucket "' + bucket_name + '" does not exist or you have no permission!'
+            logging.warning( 'Bucket "' + bucket_name + '" does not exist or you have no permission!' )
             if parent!=None:
                 # todo present Qt confirmdialog and override auto_create based in decision
                 auto_create=True
             if auto_create:
-                print "trying to create it now!"
+                logging.info( "trying to create it now!" )
                 bucket = create_bucket( bucket_name )
             else:
-                raise e('User decided not to create the bucket. Raising exception now!')
+                error_msg='User decided not to create the bucket. Raising exception now!'
+                logging.error(error_msg)
+                raise e(error_msg)
         existing_buckets[ bucket_name ] = bucket
         return bucket
     else:
@@ -85,13 +88,13 @@ def download_files(data_bucket_name, frame_list , update_progress_signal=QtCore.
             if os.path.exists( doubleDashKeyString ):
                 print('   skipping: ' + doubleDashKeyString ) # todo MD5 check
             else:
-                print('downloading: ' + doubleDashKeyString )
+                logging.info('downloading: ' + doubleDashKeyString )
                 #check if directory exists
                 dirname=os.path.dirname(doubleDashKeyString )
                 if os.path.isdir( dirname )==False:
                     os.makedirs( dirname ) # todo this has a massive overhead...refactor later
                 object.get_contents_to_filename( doubleDashKeyString , cb=percent_cb , num_cb=100 )
-            print( '-------------------------------' )
+            logging.info( '-------------------------------' )
             progress = progress+1
             update_progress_signal.emit( os.path.basename( doubleDashKeyString ) , progress , progress_100 )
     else:
@@ -103,7 +106,7 @@ def upload_file( bucket_name , file_path , strip_path_prefix='' ):
         upload_files(  bucket_name , os.path.dirname( file_path ) , [ os.path.basename( file_path ) ] , strip_path_prefix=strip_path_prefix )
         return 0
     else:
-        print 'Warning - file not found: ' + file_path
+        logging.warning( 'Warning - file not found: ' + file_path )
         return 1
 
 def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path_prefix='' , exclude_list=[] ):
@@ -113,7 +116,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
 
     for exclude in exclude_list:
         if exclude in source_dir:
-            print 'Directory excluded!'
+            logging.info( 'excluded: ' + exclude )
             return
 
     dest_dir = strip_file_path (source_dir , strip_path_prefix )
@@ -125,7 +128,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
     for filename in upload_file_names_list:
         for exclude in exclude_list:
             if exclude in filename:
-                print 'Filename excluded!'
+                logging.info( 'excluded: ' + exclude )
                 return
 
         sourcepath = os.path.join( source_dir , filename)
@@ -150,7 +153,7 @@ def upload_files( bucket_name , source_dir , upload_file_names_list , strip_path
             key = boto.s3.key.Key( bucket )
             key.key = dest_path
 
-        print "Uploading: {0} {1} / {2}".format( filename , counter , file_count)
+        logging.info( "Uploading: {0} {1} / {2}".format( filename , counter , file_count) )
         #set files metadata
         key.set_metadata('uid', '1001')
         key.set_metadata('gid', '1001')
@@ -196,7 +199,7 @@ def create_folder( bucket_name , folder_name , recursive=False , mode=493 , uid 
         key.set_metadata( 'uid' , uid )
         key.set_metadata( 'gid' , gid )
         key.set_contents_from_string('')
-        print 'Successfully created: ' + folder_name
+        logging.info( 'Successfully created: ' + folder_name )
     #else:
         #print 'Folder already exists: ' + folder_name
     return folder_name

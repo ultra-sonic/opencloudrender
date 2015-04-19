@@ -8,3 +8,4 @@ pycharm.sh
 build/
 .boto
 *.*~
+*.log

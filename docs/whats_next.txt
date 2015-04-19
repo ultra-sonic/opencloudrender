@@ -1,0 +1,5 @@
+# this is just a little reminder where I left of the last time
+
+convert scene_data_list to and ocrScene Object!!!
+	after that: add "by frame" to tableView 
+update logging
