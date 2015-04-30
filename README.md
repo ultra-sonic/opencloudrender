@@ -75,9 +75,9 @@ LAUNCH:
 =======
 just launch 
 ```
-bin/ocrSubmitUI.sh
+ocrSubmitUI.sh
 ```
 or
 ```
-bin/ocrSubmitUI.bat
+ocrSubmitUI.bat
 ```
