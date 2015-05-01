@@ -75,9 +75,9 @@ LAUNCH:
 =======
 just launch 
 ```
-ocrSubmitUI.sh
+opencloudrenderUI.sh
 ```
 or
 ```
-ocrSubmitUI.bat
+opencloudrenderUI.bat
 ```
