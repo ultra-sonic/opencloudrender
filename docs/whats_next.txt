@@ -1,5 +1,8 @@
 # this is just a little reminder where I left of the last time
 
+
+"Transport endpoint is not connected" must be handled as an error in afanasy
+
 vpn to fritzbox ? puh!
 
 setup video!
