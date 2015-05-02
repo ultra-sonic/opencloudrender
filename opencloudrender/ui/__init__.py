@@ -54,7 +54,7 @@ class ControlMainWindow(QtGui.QMainWindow):
             self.ui.vrayVersionComboBox.setCurrentIndex( vrayVersionComboBox_index )
 
         # Labels
-        self.ui.progressMessagelabel.setText( '' )
+
 
     def syncAssets(self):
         #self.scene_data_list = self.table_model.getData()
@@ -120,7 +120,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
     def setStatus(self, status_message ):
-        self.ui.progressMessagelabel.setText( status_message )
+        self.ui.statusbar.showMessage( status_message )
 
     def setProgress(self, progress_message , progress_current , progress_max ):
         self.ui.progressBar.setMaximum( progress_max )

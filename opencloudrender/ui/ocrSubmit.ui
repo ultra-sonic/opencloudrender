@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1370</width>
-    <height>346</height>
+    <height>290</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -21,9 +21,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>30</y>
+      <y>5</y>
       <width>1370</width>
-      <height>221</height>
+      <height>211</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -42,20 +42,20 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>745</x>
-        <y>30</y>
-        <width>121</width>
-        <height>26</height>
+        <x>910</x>
+        <y>0</y>
+        <width>100</width>
+        <height>21</height>
        </rect>
       </property>
      </widget>
      <widget class="QComboBox" name="vrayVersionComboBox">
       <property name="geometry">
        <rect>
-        <x>1045</x>
-        <y>30</y>
-        <width>121</width>
-        <height>26</height>
+        <x>1070</x>
+        <y>0</y>
+        <width>100</width>
+        <height>21</height>
        </rect>
       </property>
      </widget>
@@ -78,10 +78,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>405</x>
-        <y>30</y>
-        <width>121</width>
-        <height>26</height>
+        <x>740</x>
+        <y>0</y>
+        <width>100</width>
+        <height>21</height>
        </rect>
       </property>
      </widget>
@@ -102,9 +102,9 @@
       <property name="geometry">
        <rect>
         <x>5</x>
-        <y>60</y>
+        <y>29</y>
         <width>1161</width>
-        <height>120</height>
+        <height>151</height>
        </rect>
       </property>
       <property name="acceptDrops">
@@ -133,21 +133,21 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>595</x>
-        <y>35</y>
-        <width>141</width>
+        <x>860</x>
+        <y>0</y>
+        <width>45</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>default Arnold Version</string>
+       <string>Arnold</string>
       </property>
      </widget>
      <widget class="QLabel" name="dragDropOnlyLabel">
       <property name="geometry">
        <rect>
         <x>1185</x>
-        <y>10</y>
+        <y>0</y>
         <width>151</width>
         <height>20</height>
        </rect>
@@ -159,14 +159,14 @@
      <widget class="QLabel" name="vrayVersionLabel">
       <property name="geometry">
        <rect>
-        <x>895</x>
-        <y>35</y>
-        <width>141</width>
+        <x>1030</x>
+        <y>0</y>
+        <width>40</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>default V-Ray Version</string>
+       <string>V-Ray</string>
       </property>
      </widget>
      <widget class="QPushButton" name="syncImagesButton">
@@ -188,14 +188,37 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>245</x>
-        <y>35</y>
-        <width>151</width>
+        <x>690</x>
+        <y>0</y>
+        <width>45</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>default Mantra Version</string>
+       <string>Mantra</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="dataBucketNameLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>100</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Data Bucket</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="dataBucketName">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>0</y>
+        <width>530</width>
+        <height>20</height>
+       </rect>
       </property>
      </widget>
     </widget>
@@ -221,18 +244,18 @@
        <rect>
         <x>140</x>
         <y>30</y>
-        <width>531</width>
+        <width>530</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>/opt/vray</string>
+       <string>/opt/vray/*</string>
       </property>
      </widget>
      <widget class="QLabel" name="vrayRepoRootDirLabel">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>30</y>
         <width>121</width>
         <height>20</height>
@@ -247,15 +270,18 @@
        <rect>
         <x>140</x>
         <y>60</y>
-        <width>531</width>
+        <width>530</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>/opt/</string>
+       <string>/opt/hfs*</string>
       </property>
      </widget>
      <widget class="QPushButton" name="syncHoudiniRepoButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>680</x>
@@ -271,7 +297,7 @@
      <widget class="QLabel" name="houdiniRepoRootDirLabel">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>60</y>
         <width>121</width>
         <height>20</height>
@@ -286,7 +312,7 @@
        <rect>
         <x>140</x>
         <y>90</y>
-        <width>531</width>
+        <width>530</width>
         <height>20</height>
        </rect>
       </property>
@@ -295,6 +321,9 @@
       </property>
      </widget>
      <widget class="QPushButton" name="syncArnoldRepoButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>680</x>
@@ -310,7 +339,7 @@
      <widget class="QLabel" name="arnoldRepoRootDirLabel">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>90</y>
         <width>121</width>
         <height>20</height>
@@ -323,154 +352,79 @@
      <widget class="QLineEdit" name="vrayRepoExcludesLineEdit">
       <property name="geometry">
        <rect>
-        <x>890</x>
+        <x>834</x>
         <y>30</y>
-        <width>465</width>
+        <width>521</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>*docs*,*samples*</string>
+       <string>docs,include,opensl,samples,scenes</string>
       </property>
      </widget>
      <widget class="QLabel" name="vrayRepoExcludesLabel">
       <property name="geometry">
        <rect>
-        <x>830</x>
-        <y>30</y>
-        <width>61</width>
+        <x>835</x>
+        <y>5</y>
+        <width>241</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>exclude:</string>
+       <string>Excluded directories:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="vrayRepoExcludesLineEdit_2">
       <property name="geometry">
        <rect>
-        <x>890</x>
+        <x>834</x>
         <y>60</y>
-        <width>465</width>
+        <width>521</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>*toolkit*</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="vrayRepoExcludesLabel_2">
-      <property name="geometry">
-       <rect>
-        <x>830</x>
-        <y>60</y>
-        <width>61</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>exclude:</string>
+       <string>toolkit</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="vrayRepoExcludesLineEdit_3">
       <property name="geometry">
        <rect>
-        <x>890</x>
+        <x>834</x>
         <y>90</y>
-        <width>465</width>
+        <width>521</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>*noidea*</string>
+       <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="vrayRepoExcludesLabel_3">
+     <widget class="QLabel" name="repoBucketNameLabel">
       <property name="geometry">
        <rect>
-        <x>830</x>
-        <y>90</y>
-        <width>61</width>
+        <x>10</x>
+        <y>0</y>
+        <width>140</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>exclude:</string>
+       <string>Repository Bucket</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="repoBucketName">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>0</y>
+        <width>530</width>
+        <height>20</height>
+       </rect>
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QLineEdit" name="repoBucketName">
-    <property name="geometry">
-     <rect>
-      <x>829</x>
-      <y>5</y>
-      <width>531</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="repoBucketNameLabel">
-    <property name="geometry">
-     <rect>
-      <x>685</x>
-      <y>5</y>
-      <width>140</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>S3 Repository Bucket</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="dataBucketNameLabel">
-    <property name="geometry">
-     <rect>
-      <x>5</x>
-      <y>5</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>S3 Data Bucket</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="dataBucketName">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>5</y>
-      <width>561</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="progressMessagelabel">
-    <property name="geometry">
-     <rect>
-      <x>65</x>
-      <y>285</y>
-      <width>1285</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>progressMessageLabel</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="statusLabel">
-    <property name="geometry">
-     <rect>
-      <x>5</x>
-      <y>285</y>
-      <width>50</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Status:</string>
-    </property>
    </widget>
    <widget class="QPushButton" name="cancelButton">
     <property name="enabled">
@@ -479,7 +433,7 @@
     <property name="geometry">
      <rect>
       <x>1175</x>
-      <y>255</y>
+      <y>220</y>
       <width>170</width>
       <height>25</height>
      </rect>
@@ -492,7 +446,7 @@
     <property name="geometry">
      <rect>
       <x>5</x>
-      <y>260</y>
+      <y>225</y>
       <width>1161</width>
       <height>20</height>
      </rect>
@@ -501,19 +455,6 @@
      <number>0</number>
     </property>
    </widget>
-   <zorder>tabWidget</zorder>
-   <zorder>repoBucketName</zorder>
-   <zorder>repoBucketNameLabel</zorder>
-   <zorder>dataBucketNameLabel</zorder>
-   <zorder>dataBucketName</zorder>
-   <zorder>repoBucketName</zorder>
-   <zorder>repoBucketNameLabel</zorder>
-   <zorder>dataBucketNameLabel</zorder>
-   <zorder>dataBucketName</zorder>
-   <zorder>progressMessagelabel</zorder>
-   <zorder>statusLabel</zorder>
-   <zorder>cancelButton</zorder>
-   <zorder>progressBar</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -521,7 +462,7 @@
      <x>0</x>
      <y>0</y>
      <width>1370</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

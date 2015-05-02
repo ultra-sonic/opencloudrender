@@ -9,3 +9,4 @@ build/
 .boto
 *.*~
 *.log
+opencloudrender.py

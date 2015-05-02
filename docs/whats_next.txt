@@ -1,5 +1,13 @@
 # this is just a little reminder where I left of the last time
 
+vpn to fritzbox ? puh!
+
+setup video!
+
+store config.json in root folder - put to .gitignore
+
+remove official and nightlies....makes no sense!!! 
+
 aws deployment/provisioning scripts! maybe checkout open-source tools to do that!
 
 convert scene_data_list to and ocrScene Object!!!
