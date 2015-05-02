@@ -7,40 +7,42 @@ from opencloudrender.renderJobSubmission import SubmitScenesThread
 from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
 from opencloudrender.vrayUtils    import get_vrscene_data
 
-#todo redirect stdout to a log textfield
 
 class ControlMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(ControlMainWindow, self).__init__(parent)
 
         self.header = [ 'scenepath', 'start', 'end', 'camera' , 'submit' , 'synced' ,  'renderer build' ]
-        #self.scene_data_list = []
+        # self.scene_data_list = []
         self.table_model = ScenesTableModel(self, self.header) #maybe skip passing of scene_data_list and header and use parent.scene_data_list in ScenesTableModel
         self.data_bucket_name = "fbcloudrender-testdata"
-        #UI
+        # UI
 
         self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
         self.ui.setupUi(self)
 
-        #Table
+        # Tabs
+
+
+        # Table
         self.ui.scenesTableView.setModel( self.table_model )
 
         # Threads - need to be assigned to a non-local variable so they won't get garbage collected as described here:
         # http://stackoverflow.com/questions/15702782/qthread-destroyed-while-thread-is-still-running
-        self.syncAssetsThread = None
+        self.syncAssetsThread   = None
         self.submitScenesThread = None
-        self.syncImagesThread = None
+        self.syncImagesThread   = None
 
-        #Buttons
+        # Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
-        self.ui.submitScenesButton.clicked.connect( self.submitScenes ) # todo disable before sync is not pressed - maybe force-enable it through double-click
+        self.ui.submitScenesButton.clicked.connect( self.submitScenes )
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
 
-        #Buckets
-        self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) #todo implement this as an .openclouderender json file
+        # Buckets
+        self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) # todo implement this as an .openclouderender json file
         self.ui.repoBucketName.setText( os.environ.get( 'VRAY_REPO_BUCKET' , 'vray-repo' ) )
 
-        #Dropdowns
+        # Dropdowns
         self.ui.mantraVersionComboBox.addItem('14.0.258')
 
         self.ui.arnoldVersionComboBox.addItem('4.2.4.1')
@@ -51,8 +53,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         if vrayVersionComboBox_index > -1:
             self.ui.vrayVersionComboBox.setCurrentIndex( vrayVersionComboBox_index )
 
-        #Labels
-        self.ui.progressMessagelabel.setText( '' )
+        # Labels
+
 
     def syncAssets(self):
         #self.scene_data_list = self.table_model.getData()
@@ -118,7 +120,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL('layoutChanged()'))
 
     def setStatus(self, status_message ):
-        self.ui.progressMessagelabel.setText( status_message )
+        self.ui.statusbar.showMessage( status_message )
 
     def setProgress(self, progress_message , progress_current , progress_max ):
         self.ui.progressBar.setMaximum( progress_max )

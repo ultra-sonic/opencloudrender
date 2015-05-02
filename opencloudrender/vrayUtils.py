@@ -3,6 +3,25 @@ import os , re
 from pathUtils import validate_file_path
 
 
+def get_full_path( file_name , current_dir ):
+    full_file_path = file_name
+    if os.path.isfile( full_file_path ) == False:
+        full_file_path = os.path.join( current_dir , file_name )
+        if os.path.isfile( full_file_path ):
+            return full_file_path
+        else:
+            msg='Include file not found: ' + file_name
+            logging.error( msg )
+            raise Exception( msg )
+
+def get_full_image_dir_path( img_dir , current_dir):
+    if img_dir.startswith('.'):
+        full_path=os.path.abspath( os.path.join( current_dir , img_dir )  )
+        logging.info( 'convert: {0} to absolute path: {1}'.format( img_dir , full_path ))
+        return full_path
+    else:
+        return img_dir
+
 def get_vray_settings( vrscene_path ):
     logging.debug( "Reading vrscene: " + os.path.basename( vrscene_path ) )
     vray_settings_dict={}
@@ -20,6 +39,8 @@ def get_vray_settings( vrscene_path ):
                     value = stripped_line[ equals_sign_pos+1 : semi_colon_pos ]
                     vray_settings_dict[ key ] = value.lstrip('"').rstrip('"')
                 if line.find('}') > -1:
+                    # ensure full-path in img_dir
+                    vray_settings_dict['img_dir']=get_full_image_dir_path( vray_settings_dict['img_dir'] , os.path.dirname( vrscene_path ))
                     return vray_settings_dict
     error_msg="No Vray Settings found"
     logging.error( error_msg )
@@ -41,7 +62,8 @@ def get_default_camera( vrscene_path ):
             if line.startswith('CameraDefault '):
                 default_camera = line.split(' ')[1]
                 return default_camera
-    raise Exception("No anim_frame_padding found in vrscene" + vrscene_path )
+    logging.warning("No default camera found in vrscene - are you using a custom lens shader" + vrscene_path )
+    return 'not found - maybe custom lens-shader'
 
 
 def get_output_image_path( vrscene_path ):
@@ -68,7 +90,9 @@ def get_vrscene_dependencies( vrscene_path , recursion_depth=0 ):
     with open( vrscene_path , 'r' ) as vrscene:
         for line in vrscene:
             if line.startswith('#include') and line.find('.vrscene'):
-                included_vrscenes.append( line.split('"')[1] )
+                included_scene = line.split('"')[1]
+                included_vrscenes.append( get_full_path( included_scene , os.path.dirname(vrscene_path) ) )
+
             for pattern in asset_patterns:
                 regex = re.compile( pattern )
                 match = regex.search( line )
@@ -79,7 +103,7 @@ def get_vrscene_dependencies( vrscene_path , recursion_depth=0 ):
 
     #recurse into included vrscenes
     for included_scene in included_vrscenes:
-        #print "recursing into: " + included_scene
+        #check for relative include paths if file does not exist
         assets.extend( get_vrscene_dependencies( included_scene , recursion_depth=recursion_depth+1) )
 
     assets.extend( included_vrscenes )

@@ -14,7 +14,9 @@ MAX_SIZE = 20 * 1000 * 1000
 PART_SIZE = 6 * 1000 * 1000
 
 try:
-    conn = boto.connect_s3()
+    # todo - make this a thread and the rest of the code a class (or object)
+    # conn = boto.connect_s3()
+    conn = boto.connect_s3(is_secure=False) # todo - re-investigate this - it is just a workaround for this issue: http://stackoverflow.com/questions/28115250/boto-ssl-certificate-verify-failed-certificate-verify-failed-while-connecting
 except boto.exception.NoAuthHandlerFound:
     logging.warning( 'No s3 credentials found - you cannot submit!' )
 
