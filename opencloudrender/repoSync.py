@@ -47,8 +47,17 @@ class SyncRepositoryThread(QtCore.QThread):
 
         resolved_glob = glob.glob( self.repo_path_glob )
         print resolved_glob
+        glob_dirs=[]
         for path in resolved_glob:
             if os.path.isdir( path ):
+                glob_dirs.append( path )
+            elif os.path.isfile( path ):
+                dir_path = os.path.dirname(path)
+                if dir_path not in glob_dirs:
+                    glob_dirs.append( dir_path )
+
+        print glob_dirs
+        for path in glob_dirs:
                 for (source_dir, dir_names, file_names) in os.walk( path ):
                     s3IO.create_folders( self.repo_bucket_name , source_dir , dir_names , strip_source_prefix = self.strip_path_prefix )
                     if file_names!=[] and source_dir.find( self.build_revision )>-1 and source_dir.find( operating_system )>-1 or source_dir==self.strip_path_prefix: #source_dir==repo_path_glob is to always update root dir including the vrclient.xml

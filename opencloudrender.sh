@@ -19,9 +19,11 @@ echo PYTHONPATH: $PYTHONPATH
 #afanasy done
 
 python -c "import opencloudrender as ocr;ocr.showUI()"
-echo "sleeping 3..."
-sleep 1
-echo "sleeping 2..."
-sleep 1
-echo "sleeping 1..."
+#echo "sleeping 3..."
+#sleep 1
+#echo "sleeping 2..."
+#sleep 1
+#echo "sleeping 1..."
+#sleep 1
+echo "sleeping 60 for debugging reasons..."
 sleep 60
