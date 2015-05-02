@@ -17,7 +17,7 @@ log_dir = tempfile.gettempdir()
 # log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender_' + dt.strftime( format='%m%d%Y%_H%M%S' ) + '.log' )
 log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender.log' )
 logging.basicConfig(format='%(asctime)s ::: %(levelname)s ::: %(message)s', datefmt='%m/%d/%Y %H:%M:%S' , level=logging.DEBUG , filename=log_file )
-print "logging to: " + log_file
+print "logging to: \n" + log_file
 
 data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET not set!' )
 logging.debug( "S3 Data Bucket: " + data_bucket_name )

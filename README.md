@@ -75,9 +75,9 @@ LAUNCH:
 =======
 just launch 
 ```
-opencloudrenderUI.sh
+opencloudrender.sh
 ```
 or
 ```
-opencloudrenderUI.bat
+opencloudrender.bat
 ```

@@ -4,6 +4,7 @@ import os
 import ocrSubmit
 import operator
 from opencloudrender.renderJobSubmission import SubmitScenesThread
+from opencloudrender.repoSync import SyncRepositoryThread
 from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
 from opencloudrender.vrayUtils    import get_vrscene_data
 
@@ -32,11 +33,13 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.syncAssetsThread   = None
         self.submitScenesThread = None
         self.syncImagesThread   = None
+        self.syncRepositoryThread   = None
 
         # Buttons
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
         self.ui.submitScenesButton.clicked.connect( self.submitScenes )
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
+        self.ui.vrayRepoSyncButton.clicked.connect( self.syncVrayRepository )
 
         # Buckets
         self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) # todo implement this as an .openclouderender json file
@@ -55,9 +58,25 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         # Labels
 
+    def syncVrayRepository(self):
+        version = self.ui.vrayRepoVersionComboBox.currentText()
+        if version == 'all':
+            version = ''
+        self.syncRepository( self.ui.vrayRepoPathGlobLineEdit.text() , self.ui.vrayRepoStripPathPrefixLineEdit.text() , version , self.ui.vrayRepoExcludesLineEdit.text() )
+
+    def syncRepository(self , path_glob , strip_path_prefix , build_revision , exclude_directories ):
+        self.syncRepositoryThread = SyncRepositoryThread( repo_bucket_name=self.ui.repoBucketName.text() , repo_path_glob=path_glob , strip_path_prefix=strip_path_prefix ,  build_revision=build_revision , exclude_list_comma_separated=exclude_directories )
+        self.syncRepositoryThread.update_progress_signal.connect( self.setProgress )
+        self.syncRepositoryThread.increment_progress_signal.connect( self.incrementProgress )
+        self.syncRepositoryThread.update_status_signal.connect( self.setStatus )
+        # self.syncRepositoryThread.repo_synced_signal.connect( self.setSceneSynced )
+        # self.syncRepositoryThread.started.connect( self.disableAllButtons )
+        # self.syncRepositoryThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
+        # self.syncRepositoryThread.finished.connect( self.enableAllButtons )
+        self.ui.cancelButton.clicked.connect( self.syncRepositoryThread.cancel )
+        self.syncRepositoryThread.start()
 
     def syncAssets(self):
-        #self.scene_data_list = self.table_model.getData()
         self.syncAssetsThread = SyncAssetsThread( scene_data_list = self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
         self.syncAssetsThread.update_progress_signal.connect( self.setProgress )
         self.syncAssetsThread.increment_progress_signal.connect( self.incrementProgress )
@@ -74,7 +93,6 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.table_model.setScenepathSynced( scene_path )
 
     def submitScenes(self):
-        #self.scene_data_list = self.table_model.getData()
         self.submitScenesThread = SubmitScenesThread( scene_data_list=self.table_model.scene_data_list )
         self.submitScenesThread.update_progress_signal.connect( self.setProgress )
         self.submitScenesThread.update_status_signal.connect( self.setStatus )
@@ -85,7 +103,6 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.submitScenesThread.start()
 
     def syncImages(self):
-        #self.data_list = self.table_model.getData()
         self.syncImagesThread = SyncImagesThread( scene_data_list=self.table_model.scene_data_list , data_bucket_name = self.data_bucket_name )
         self.syncImagesThread.update_progress_signal.connect( self.setProgress )
         self.syncImagesThread.started.connect( self.disableAllButtons )
