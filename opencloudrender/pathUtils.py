@@ -19,5 +19,5 @@ def strip_file_path( file_path , strip_path_prefix  ):
 
 def add_padding_to_image_path( img_file_path , anim_frame_padding , frame_num_prefix='' ):
     last_dot = img_file_path.rfind('.')
-    img_file_with_padding = img_file_path[ : last_dot ] + frame_num_prefix + "%0{0}d".format( anim_frame_padding ) + img_file_path[ last_dot : ]
+    img_file_with_padding = img_file_path[ : last_dot ] + frame_num_prefix + ".%0{0}d".format( anim_frame_padding ) + img_file_path[ last_dot : ]
     return img_file_with_padding
