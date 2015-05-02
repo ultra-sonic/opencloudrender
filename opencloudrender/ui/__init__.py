@@ -50,7 +50,7 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         self.ui.arnoldVersionComboBox.addItem('4.2.4.1')
 
-        self.ui.vrayVersionComboBox.addItem('30001')
+        self.ui.vrayVersionComboBox.addItem('31003')
         self.ui.vrayVersionComboBox.addItem('24002')
         vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText(os.environ.get('VRAY_VERSION' , '30001' ))
         if vrayVersionComboBox_index > -1:
