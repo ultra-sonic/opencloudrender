@@ -62,7 +62,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         version = self.ui.vrayRepoVersionComboBox.currentText()
         if version == 'all':
             version = ''
-        self.syncRepository( self.ui.vrayRepoPathGlobLineEdit.text() , self.ui.vrayRepoStripPathPrefixLineEdit.text() , version , self.ui.vrayRepoExcludesLineEdit.text() )
+        self.syncRepository( self.ui.vrayRepoPathGlob.text() , self.ui.vrayRepoStripPathPrefix.text() , version , self.ui.vrayRepoExcludes.text() )
 
     def syncRepository(self , path_glob , strip_path_prefix , build_revision , exclude_directories ):
         self.syncRepositoryThread = SyncRepositoryThread( repo_bucket_name=self.ui.repoBucketName.text() , repo_path_glob=path_glob , strip_path_prefix=strip_path_prefix ,  build_revision=build_revision , exclude_list_comma_separated=exclude_directories )
