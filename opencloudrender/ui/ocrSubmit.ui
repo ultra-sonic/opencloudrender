@@ -729,6 +729,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="repoBucketName">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>835</x>
@@ -758,5 +761,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>repoBucketCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>repoBucketName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>759</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1095</x>
+     <y>19</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

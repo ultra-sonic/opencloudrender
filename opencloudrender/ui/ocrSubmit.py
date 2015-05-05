@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Sun May  3 14:45:35 2015
+# Created: Tue May  5 09:06:20 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -203,10 +203,12 @@ class Ui_OpenCloudRenderSubmit(object):
         self.dataBucketName.setGeometry(QtCore.QRect(140, 10, 530, 20))
         self.dataBucketName.setObjectName("dataBucketName")
         self.repoBucketName = QtGui.QLineEdit(self.centralwidget)
+        self.repoBucketName.setEnabled(True)
         self.repoBucketName.setGeometry(QtCore.QRect(835, 10, 521, 20))
         self.repoBucketName.setObjectName("repoBucketName")
         self.repoBucketCheckBox = QtGui.QCheckBox(self.centralwidget)
         self.repoBucketCheckBox.setGeometry(QtCore.QRect(690, 10, 140, 20))
+        self.repoBucketCheckBox.setChecked(True)
         self.repoBucketCheckBox.setObjectName("repoBucketCheckBox")
         OpenCloudRenderSubmit.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(OpenCloudRenderSubmit)
@@ -215,6 +217,7 @@ class Ui_OpenCloudRenderSubmit(object):
 
         self.retranslateUi(OpenCloudRenderSubmit)
         self.tabWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.repoBucketCheckBox, QtCore.SIGNAL("toggled(bool)"), self.repoBucketName.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(OpenCloudRenderSubmit)
 
     def retranslateUi(self, OpenCloudRenderSubmit):
