@@ -6,17 +6,18 @@ from pathUtils import validate_file_path, add_padding_to_image_path
 from PySide import QtGui
 import ui
 
-#from datetime import datetime
-#dt=datetime.now()
 import logging
 import tempfile
 
 # ENABLE LOGGING
 log_dir = tempfile.gettempdir()
-# append date to log-filename
-# log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender_' + dt.strftime( format='%m%d%Y%_H%M%S' ) + '.log' )
 log_file = os.path.join( os.path.abspath(log_dir) , 'opencloudrender.log' )
-logging.basicConfig(format='%(asctime)s ::: %(levelname)s ::: %(message)s', datefmt='%m/%d/%Y %H:%M:%S' , level=logging.DEBUG , filename=log_file )
+logging.basicConfig(
+    format='%(asctime)s ::: %(levelname)s ::: %(message)s',
+    datefmt='%m/%d/%Y %H:%M:%S',
+    level=logging.DEBUG,
+    filename=log_file
+)
 print "logging to: \n" + log_file
 
 data_bucket_name        = os.environ.get('DATA_BUCKET' , 'env var DATA_BUCKET not set!' )
@@ -52,7 +53,11 @@ def upload_image_s3( scene_path , file_path , strip_path_prefix , start_frame , 
         for frame_number in range( start_frame , end_frame+1 , step_size ):
             file_path_frame  = add_padding_to_image_path( file_path , padding ) % frame_number
             #data_bucket_name = os.environ['DATA_BUCKET']
-            s3IO.upload_file( data_bucket_name , validate_file_path( file_path_frame ) , strip_path_prefix=strip_path_prefix )
+            s3IO.upload_file(
+                data_bucket_name,
+                validate_file_path( file_path_frame ),
+                strip_path_prefix=strip_path_prefix
+            )
 
 def upload_image_ftp( file_path , strip_path_prefix ):
     """
