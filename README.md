@@ -1,5 +1,5 @@
-PREREQUISITES:
-==============
+PREREQUISITES
+=============
 Python - on Windows only:
 ----------------
 
@@ -43,8 +43,8 @@ cd boto
 sudo python setup.py install
 ```
 
-INSTALL:
-========
+INSTALL
+=======
 
 ```
 git clone https://github.com/ultra-sonic/opencloudrender.git
@@ -57,8 +57,8 @@ git submodule update
 > I originally intended to install opencloudrender using distutils, but due to the dependency on "cgru/afanasy" this seems impossible.
 > If anybody comes up with a clever way let me know!
 
-CONFIGURE:
-==========
+CONFIGURE
+=========
 Afanasy
 ---------
 you must configure the hostname or ip of your afserver here:
@@ -71,8 +71,8 @@ Boto
 please copy .boto-default to your user-home and rename it to .boto
 now fill in your own aws credentials - also remove those <> brackets
 
-LAUNCH:
-=======
+LAUNCH
+======
 just launch 
 ```
 opencloudrender.sh
