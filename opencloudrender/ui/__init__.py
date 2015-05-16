@@ -1,6 +1,6 @@
 import logging
 from PySide import QtGui,QtCore
-import os
+import os,json
 import ocrSubmit
 import operator
 from opencloudrender.renderJobSubmission import SubmitScenesThread
@@ -8,6 +8,8 @@ from opencloudrender.repoSync import SyncRepositoryThread
 from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
 from opencloudrender.vrayUtils    import get_vrscene_data
 
+home = os.path.expanduser('~')
+config_file_path = os.path.join( home , '.opencloudrender' )
 
 class ControlMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -22,8 +24,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui =  ocrSubmit.Ui_OpenCloudRenderSubmit()
         self.ui.setupUi(self)
 
-        # Tabs
-
+        # User config
+        self.user_config={}
+        self.loadUserConfig()
 
         # Table
         self.ui.scenesTableView.setModel( self.table_model )
@@ -43,21 +46,48 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.vrayRepoSyncButton.clicked.connect( self.syncVrayRepository )
 
         # Buckets
-        self.ui.dataBucketName.setText( os.environ.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) ) # todo implement this as an .openclouderender json file
-        self.ui.repoBucketName.setText( os.environ.get( 'VRAY_REPO_BUCKET' , 'vray-repo' ) )
+        self.ui.dataBucketName.setText( self.user_config.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) )
+        self.ui.dataBucketName.textChanged.connect( lambda value : self.setConfig( 'DATA_BUCKET' , value ) )
+
+        self.ui.repoBucketName.setText( self.user_config.get( 'VRAY_REPO_BUCKET' , 'vray-repo' ) )
+        self.ui.repoBucketName.textChanged.connect( lambda value : self.setConfig( 'VRAY_REPO_BUCKET' , value ) )
 
         # Dropdowns
         self.ui.mantraVersionComboBox.addItem('14.0.258')
 
         self.ui.arnoldVersionComboBox.addItem('4.2.4.1')
 
+        # todo - check repo bucket for existing versions instead of hardcoding them here
         self.ui.vrayVersionComboBox.addItem('31003')
         self.ui.vrayVersionComboBox.addItem('24002')
-        vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText(os.environ.get('VRAY_VERSION' , '31003' ))
+
+        vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText( self.user_config.get('VRAY_VERSION' , '31003' ) )
         if vrayVersionComboBox_index > -1:
             self.ui.vrayVersionComboBox.setCurrentIndex( vrayVersionComboBox_index )
+        self.ui.vrayVersionComboBox.currentIndexChanged.connect( lambda : self.setConfig( 'VRAY_VERSION' , self.ui.vrayVersionComboBox.currentText() ) )
 
         # Labels
+
+    #@QtCore.Slot()
+    def setConfig(self , key , value ):
+        self.user_config[key] = value
+        self.saveUserConfig()
+
+    def loadUserConfig(self):
+        if os.path.isfile( config_file_path ):
+            config_file = open(
+                config_file_path,
+                mode='r'
+            )
+            self.user_config = json.load( config_file )
+            logging.info( 'loaded configfile from ' + config_file_path)
+    def saveUserConfig(self):
+        config_file = open(
+            config_file_path,
+            mode='w'
+        )
+        json.dump( self.user_config , config_file )
+        logging.info( 'saved configfile to ' + config_file_path)
 
     def addScenes(self):
         file_path, _ = QtGui.QFileDialog.getOpenFileName(self, 'Choose renderable files...' , filter=("renderable files (*.vrscene *.ass *.ifd *.hip)") )
@@ -90,7 +120,10 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.syncAssetsThread.scene_synced_signal.connect( self.setSceneSynced )
         self.syncAssetsThread.started.connect( self.disableAllButtons )
         self.syncAssetsThread.terminated.connect( self.ui.syncAssetsButton.setEnabled )
+
         self.syncAssetsThread.finished.connect( self.enableAllButtons )
+        self.syncAssetsThread.finished.connect( self.saveUserConfig )
+
         self.ui.cancelButton.clicked.connect( self.syncAssetsThread.cancel )
         self.syncAssetsThread.start()
 
@@ -104,7 +137,10 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.submitScenesThread.update_status_signal.connect( self.setStatus )
         self.submitScenesThread.started.connect( self.disableAllButtons )
         self.submitScenesThread.terminated.connect( self.enableAllButtons )
+
         self.submitScenesThread.finished.connect( self.enableAllButtons )
+        self.submitScenesThread.finished.connect( self.saveUserConfig )
+
         self.ui.cancelButton.clicked.connect( self.submitScenesThread.cancel )
         self.submitScenesThread.start()
 
@@ -198,7 +234,6 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         if index.column() == 1 or index.column() == 2:
             flags = QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled
         elif index.column() == 4 or index.column() == 5:
-            # todo make this sucker checkable!!!
             flags = QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
         else:
             flags = QtCore.Qt.ItemIsEnabled
@@ -292,6 +327,8 @@ class ScenesTableModel(QtCore.QAbstractTableModel):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self.header[col]
         return None
+
+    # todo implement right-click menu with a REMOVE command
 
     def sort(self, col, order):
         """sort table by given column number col"""
