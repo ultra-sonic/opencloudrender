@@ -36,6 +36,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.syncRepositoryThread   = None
 
         # Buttons
+        self.ui.addScenesButton.clicked.connect( self.addScenes )
         self.ui.syncAssetsButton.clicked.connect( self.syncAssets )
         self.ui.submitScenesButton.clicked.connect( self.submitScenes )
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
@@ -52,11 +53,16 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         self.ui.vrayVersionComboBox.addItem('31003')
         self.ui.vrayVersionComboBox.addItem('24002')
-        vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText(os.environ.get('VRAY_VERSION' , '30001' ))
+        vrayVersionComboBox_index = self.ui.vrayVersionComboBox.findText(os.environ.get('VRAY_VERSION' , '31003' ))
         if vrayVersionComboBox_index > -1:
             self.ui.vrayVersionComboBox.setCurrentIndex( vrayVersionComboBox_index )
 
         # Labels
+
+    def addScenes(self):
+        file_path, _ = QtGui.QFileDialog.getOpenFileName(self, 'Choose renderable files...' , filter=("renderable files (*.vrscene *.ass *.ifd *.hip)") )
+        self.addFile( file_path )
+
 
     def syncVrayRepository(self):
         version = self.ui.vrayRepoVersionComboBox.currentText()
@@ -124,17 +130,20 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL('layoutAboutToBeChanged()'))
         for url in pathList:
             path=url.toLocalFile()
-            if os.path.isfile(path) and path.endswith('.vrscene'):
-                vrscene_data = get_vrscene_data( path )
-                vray_build = self.ui.vrayVersionComboBox.currentText()
-                self.table_model.add( vrscene_data , vray_build ) # extend by default vray version from ui
-                self.ui.scenesTableView.resizeColumnsToContents()
-            elif os.path.isdir(path):
-                logging.debug('Path dropped - unsupported at the moment - sorry!')
-            else:
-                logging.error( 'Unsupported url:' + url)
-            #todo implement folder handling here
+            self.addFile( path )
         self.emit(QtCore.SIGNAL('layoutChanged()'))
+
+    def addFile( self , path ):
+        if os.path.isfile(path) and path.endswith('.vrscene'):
+            vrscene_data = get_vrscene_data( path )
+            vray_build = self.ui.vrayVersionComboBox.currentText()
+            self.table_model.add( vrscene_data , vray_build ) # extend by default vray version from ui
+            self.ui.scenesTableView.resizeColumnsToContents()
+        elif os.path.isdir(path):
+            logging.debug('Path dropped - unsupported at the moment - sorry!')
+        else:
+            logging.error( 'Unsupported path:' + path )
+        #todo implement folder handling here
 
     def setStatus(self, status_message ):
         self.ui.statusbar.showMessage( status_message )

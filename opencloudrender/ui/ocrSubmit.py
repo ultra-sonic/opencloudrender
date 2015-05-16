@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Tue May  5 09:06:20 2015
+# Created: Sat May 16 18:46:27 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,7 +44,6 @@ class Ui_OpenCloudRenderSubmit(object):
         self.scenesTableView.setAcceptDrops(True)
         self.scenesTableView.setObjectName("scenesTableView")
         self.addScenesButton = QtGui.QPushButton(self.submissionTab)
-        self.addScenesButton.setEnabled(False)
         self.addScenesButton.setGeometry(QtCore.QRect(1175, 30, 170, 30))
         self.addScenesButton.setObjectName("addScenesButton")
         self.arnoldVersionLabel = QtGui.QLabel(self.submissionTab)
@@ -208,7 +207,6 @@ class Ui_OpenCloudRenderSubmit(object):
         self.repoBucketName.setObjectName("repoBucketName")
         self.repoBucketCheckBox = QtGui.QCheckBox(self.centralwidget)
         self.repoBucketCheckBox.setGeometry(QtCore.QRect(690, 10, 140, 20))
-        self.repoBucketCheckBox.setChecked(True)
         self.repoBucketCheckBox.setObjectName("repoBucketCheckBox")
         OpenCloudRenderSubmit.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(OpenCloudRenderSubmit)
