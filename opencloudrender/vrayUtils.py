@@ -1,6 +1,7 @@
 import logging
-import os , re
+import os , re , zipfile
 from pathUtils import validate_file_path
+from PySide import QtGui,QtCore
 
 
 def get_full_path( file_name , current_dir ):
@@ -109,3 +110,46 @@ def get_vrscene_dependencies( vrscene_path , recursion_depth=0 ):
     assets.extend( included_vrscenes )
     logging.debug( assets )
     return assets
+
+def findInNamelist( search_string , name_list ):
+    for item in name_list:
+        if item.find(search_string) > -1:
+            return True
+    return False
+
+class InstallFromZipThread(QtCore.QThread):
+    show_error_signal = QtCore.Signal( str )
+
+    def __init__( self , zip_file_path , install_root_dir , parent=None):
+        super(InstallFromZipThread,self).__init__()
+        self.zip_file_path = zip_file_path
+        self.install_root_dir = install_root_dir
+        self.parent = parent
+
+    def run(self):
+        # validate zip contents
+        zip_file = zipfile.ZipFile( self.zip_file_path )
+        #print zip_file.namelist()
+        if findInNamelist( 'vray.bin' , zip_file.namelist() ) == False:
+            self.show_error_signal.emit( 'vray.bin not found inside zip file!' )
+            return False
+
+        # find build revision number
+        regex = re.compile( '_[0-9][0-9][0-9][0-9][0-9]_' )
+        build_revision_match = regex.search( os.path.basename( self.zip_file_path ) )
+        if build_revision_match != None:
+            build_revision = build_revision_match.group().strip('_')
+            print build_revision
+        else:
+            self.show_error_signal.emit( 'No 5 digit revision number found!' )
+            return False
+
+        # extract
+        install_dir = os.path.join( self.install_root_dir , build_revision )
+        if os.path.isdir(install_dir):
+            self.show_error_signal.emit( 'Directory {0} already exists!'.format(install_dir) )
+            return False
+        else:
+            os.makedirs( install_dir ) # todo check mode
+            zip_file.extractall( install_dir )
+            return True

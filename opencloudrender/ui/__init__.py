@@ -3,6 +3,7 @@ from PySide import QtGui,QtCore
 import os,json
 import ocrSubmit
 import operator
+from opencloudrender import vrayUtils
 from opencloudrender.renderJobSubmission import SubmitScenesThread
 from opencloudrender.repoSync import SyncRepositoryThread
 from opencloudrender.sceneSync import SyncAssetsThread, SyncImagesThread
@@ -44,6 +45,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.submitScenesButton.clicked.connect( self.submitScenes )
         self.ui.syncImagesButton.clicked.connect( self.syncImages )
         self.ui.vrayRepoSyncButton.clicked.connect( self.syncVrayRepository )
+        self.ui.vrayInstallButton.clicked.connect( self.installVray )
 
         # Buckets
         self.ui.dataBucketName.setText( self.user_config.get( 'DATA_BUCKET'      , 'fbcloudrender-testdata' ) )
@@ -68,7 +70,25 @@ class ControlMainWindow(QtGui.QMainWindow):
 
         # Labels
 
-    #@QtCore.Slot()
+    def showErrorMessage(self , error_msg ):
+        # todo DRY
+        logging.error( error_msg )
+        box = QtGui.QMessageBox( self )
+        box.setText( error_msg )
+        box.show()
+
+
+    def installVray(self):
+        file_path, _ = QtGui.QFileDialog.getOpenFileName(self, 'Choose Linux installer zip-files for VRay...' , filter=("zip files (vraystd*linux*x64*.zip)") )
+        vray_repo_glob = self.ui.vrayRepoPathGlob.text()
+        if os.path.isdir( vray_repo_glob ):
+            vray_repo_root = vray_repo_glob
+        else:
+            vray_repo_root = os.path.dirname( vray_repo_glob )
+        install_thread = vrayUtils.InstallFromZipThread( file_path , vray_repo_root , parent=self )
+        install_thread.show_error_signal.connect( self.showErrorMessage )
+        install_thread.start()
+
     def setConfig(self , key , value ):
         self.user_config[key] = value
         self.saveUserConfig()

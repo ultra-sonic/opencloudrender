@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="movable">
      <bool>false</bool>
@@ -619,7 +619,7 @@
      <widget class="QLabel" name="vrayRepoStripPathPrefixLabel">
       <property name="geometry">
        <rect>
-        <x>500</x>
+        <x>540</x>
         <y>5</y>
         <width>181</width>
         <height>20</height>
@@ -632,9 +632,9 @@
      <widget class="QLineEdit" name="vrayRepoStripPathPrefix">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>540</x>
         <y>34</y>
-        <width>271</width>
+        <width>191</width>
         <height>20</height>
        </rect>
       </property>
@@ -645,9 +645,9 @@
      <widget class="QLineEdit" name="houdiniRepoStripPathPrefix">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>540</x>
         <y>74</y>
-        <width>271</width>
+        <width>191</width>
         <height>20</height>
        </rect>
       </property>
@@ -658,14 +658,27 @@
      <widget class="QLineEdit" name="arnoldRepoStripPathPrefix">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>540</x>
         <y>114</y>
-        <width>271</width>
+        <width>191</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
        <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="vrayInstallButton">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>30</y>
+        <width>70</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>install</string>
       </property>
      </widget>
     </widget>

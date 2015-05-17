@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ocrSubmit.ui'
 #
-# Created: Sat May 16 18:46:27 2015
+# Created: Sun May 17 19:41:09 2015
 #      by: pyside-uic 0.2.14 running on PySide 1.2.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -171,20 +171,23 @@ class Ui_OpenCloudRenderSubmit(object):
         self.localRepoPathGlobLabel.setGeometry(QtCore.QRect(100, 5, 231, 20))
         self.localRepoPathGlobLabel.setObjectName("localRepoPathGlobLabel")
         self.vrayRepoStripPathPrefixLabel = QtGui.QLabel(self.repoTab)
-        self.vrayRepoStripPathPrefixLabel.setGeometry(QtCore.QRect(500, 5, 181, 20))
+        self.vrayRepoStripPathPrefixLabel.setGeometry(QtCore.QRect(540, 5, 181, 20))
         self.vrayRepoStripPathPrefixLabel.setObjectName("vrayRepoStripPathPrefixLabel")
         self.vrayRepoStripPathPrefix = QtGui.QLineEdit(self.repoTab)
-        self.vrayRepoStripPathPrefix.setGeometry(QtCore.QRect(460, 34, 271, 20))
+        self.vrayRepoStripPathPrefix.setGeometry(QtCore.QRect(540, 34, 191, 20))
         self.vrayRepoStripPathPrefix.setText("")
         self.vrayRepoStripPathPrefix.setObjectName("vrayRepoStripPathPrefix")
         self.houdiniRepoStripPathPrefix = QtGui.QLineEdit(self.repoTab)
-        self.houdiniRepoStripPathPrefix.setGeometry(QtCore.QRect(460, 74, 271, 20))
+        self.houdiniRepoStripPathPrefix.setGeometry(QtCore.QRect(540, 74, 191, 20))
         self.houdiniRepoStripPathPrefix.setText("")
         self.houdiniRepoStripPathPrefix.setObjectName("houdiniRepoStripPathPrefix")
         self.arnoldRepoStripPathPrefix = QtGui.QLineEdit(self.repoTab)
-        self.arnoldRepoStripPathPrefix.setGeometry(QtCore.QRect(460, 114, 271, 20))
+        self.arnoldRepoStripPathPrefix.setGeometry(QtCore.QRect(540, 114, 191, 20))
         self.arnoldRepoStripPathPrefix.setText("")
         self.arnoldRepoStripPathPrefix.setObjectName("arnoldRepoStripPathPrefix")
+        self.vrayInstallButton = QtGui.QPushButton(self.repoTab)
+        self.vrayInstallButton.setGeometry(QtCore.QRect(460, 30, 70, 30))
+        self.vrayInstallButton.setObjectName("vrayInstallButton")
         self.tabWidget.addTab(self.repoTab, "")
         self.cancelButton = QtGui.QPushButton(self.centralwidget)
         self.cancelButton.setEnabled(False)
@@ -214,7 +217,7 @@ class Ui_OpenCloudRenderSubmit(object):
         OpenCloudRenderSubmit.setStatusBar(self.statusbar)
 
         self.retranslateUi(OpenCloudRenderSubmit)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.repoBucketCheckBox, QtCore.SIGNAL("toggled(bool)"), self.repoBucketName.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(OpenCloudRenderSubmit)
 
@@ -258,6 +261,7 @@ class Ui_OpenCloudRenderSubmit(object):
         self.arnoldRepoVersionComboBox.setItemText(1, QtGui.QApplication.translate("OpenCloudRenderSubmit", "scan...", None, QtGui.QApplication.UnicodeUTF8))
         self.localRepoPathGlobLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "Local Linux Repository paths (glob)", None, QtGui.QApplication.UnicodeUTF8))
         self.vrayRepoStripPathPrefixLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "strip path prefix - optional", None, QtGui.QApplication.UnicodeUTF8))
+        self.vrayInstallButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "install", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.repoTab), QtGui.QApplication.translate("OpenCloudRenderSubmit", "Repositories", None, QtGui.QApplication.UnicodeUTF8))
         self.cancelButton.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.dataBucketNameLabel.setText(QtGui.QApplication.translate("OpenCloudRenderSubmit", "Data Bucket", None, QtGui.QApplication.UnicodeUTF8))
